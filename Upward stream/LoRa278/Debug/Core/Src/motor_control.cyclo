@@ -1,0 +1,4 @@
+../Core/Src/motor_control.c:4:6:Motor_Init	1
+../Core/Src/motor_control.c:11:6:Motor_SetSpeed	5
+../Core/Src/motor_control.c:34:6:Motor_Brake	1
+../Core/Src/motor_control.c:40:6:Motor_Coast	1

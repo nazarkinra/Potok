@@ -1,0 +1,2 @@
+../Core/Src/serial_print.c:9:6:Serial_Printf	292	static
+../Core/Src/serial_print.c:29:6:Serial_PrintString	16	static

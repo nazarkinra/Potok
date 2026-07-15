@@ -1,0 +1,4 @@
+../Core/Src/sht40.c:16:16:SHT40_CalcCrc8	24	static
+../Core/Src/sht40.c:35:6:SHT40_Init	8	static
+../Core/Src/sht40.c:43:6:SHT40_SoftReset	24	static
+../Core/Src/sht40.c:55:9:SHT40_Read_Data	40	static

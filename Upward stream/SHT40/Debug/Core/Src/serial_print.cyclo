@@ -1,0 +1,2 @@
+../Core/Src/serial_print.c:9:6:Serial_Printf	4
+../Core/Src/serial_print.c:29:6:Serial_PrintString	3

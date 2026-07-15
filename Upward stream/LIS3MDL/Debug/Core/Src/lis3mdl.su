@@ -1,0 +1,5 @@
+../Core/Src/lis3mdl.c:5:6:LIS3MDL_WriteReg	24	static
+../Core/Src/lis3mdl.c:12:9:LIS3MDL_ReadReg	32	static
+../Core/Src/lis3mdl.c:21:9:LIS3MDL_Init	8	static
+../Core/Src/lis3mdl.c:40:6:LIS3MDL_Read_Mag	48	static
+../Core/Src/lis3mdl.c:56:9:LIS3MDL_IsDataReady	8	static

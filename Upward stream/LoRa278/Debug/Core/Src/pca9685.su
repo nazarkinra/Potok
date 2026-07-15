@@ -1,0 +1,7 @@
+../Core/Src/pca9685.c:6:13:PCA9685_WriteReg	32	static
+../Core/Src/pca9685.c:10:13:PCA9685_WriteRegMulti	32	static
+../Core/Src/pca9685.c:14:6:PCA9685_Init	24	static
+../Core/Src/pca9685.c:33:6:PCA9685_SetPWM	24	static
+../Core/Src/pca9685.c:44:6:PCA9685_SetDutyPercent	24	static
+../Core/Src/pca9685.c:55:6:PCA9685_SetFullOn	24	static
+../Core/Src/pca9685.c:62:6:PCA9685_SetFullOff	24	static

@@ -1,0 +1,5 @@
+../Core/Src/lis3mdl.c:5:16:SPI_WriteByte	1
+../Core/Src/lis3mdl.c:11:6:LIS3MDL_WriteReg	1
+../Core/Src/lis3mdl.c:18:9:LIS3MDL_ReadReg	1
+../Core/Src/lis3mdl.c:27:9:LIS3MDL_Init	2
+../Core/Src/lis3mdl.c:41:6:LIS3MDL_Read_Mag	2

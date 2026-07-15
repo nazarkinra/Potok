@@ -1,0 +1,4 @@
+../Core/Src/mpu6050.c:3:26:MPU6050_WriteReg	1
+../Core/Src/mpu6050.c:7:19:MPU6050_Init	5
+../Core/Src/mpu6050.c:31:19:MPU6050_ReadRaw	2
+../Core/Src/mpu6050.c:48:6:MPU6050_ToPhysical	1

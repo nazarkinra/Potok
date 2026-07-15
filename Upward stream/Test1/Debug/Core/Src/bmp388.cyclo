@@ -1,0 +1,11 @@
+../Core/Src/bmp388.c:9:13:SPI_CS_Low	1
+../Core/Src/bmp388.c:13:13:SPI_CS_High	1
+../Core/Src/bmp388.c:17:16:SPI_WriteByte	1
+../Core/Src/bmp388.c:24:9:BMP388_ReadReg	1
+../Core/Src/bmp388.c:34:13:BMP388_ReadRegs	1
+../Core/Src/bmp388.c:43:13:BMP388_WriteReg	1
+../Core/Src/bmp388.c:51:16:BMP388_ReadCalib	1
+../Core/Src/bmp388.c:74:13:BMP388_Compensate	1
+../Core/Src/bmp388.c:96:9:BMP388_Init	3
+../Core/Src/bmp388.c:129:9:BMP388_Read	2
+../Core/Src/bmp388.c:147:7:BMP388_Altitude	3

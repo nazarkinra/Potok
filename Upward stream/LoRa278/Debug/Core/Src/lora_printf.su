@@ -1,0 +1,3 @@
+../Core/Src/lora_printf.c:9:6:LoRa_Printf_Init	16	static
+../Core/Src/lora_printf.c:15:5:LoRa_Printf	216	static
+../Core/Src/lora_printf.c:33:6:LoRa_Printf_HandleRx	224	static
