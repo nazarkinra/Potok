@@ -1,3 +1,3 @@
-# Serial Project
+# Проект Serial
 
-This project is for the STM32F401CCU6 microcontroller. It is used to test and demonstrate Serial (UART) communication.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Он используется для тестирования и демонстрации последовательной (UART) связи.

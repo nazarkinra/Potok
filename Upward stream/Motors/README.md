@@ -1,3 +1,3 @@
-# Motors Project
+# Проект Motors
 
-This project is for the STM32F401CCU6 microcontroller. It demonstrates motor control using the PCA9685 PWM controller.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Он демонстрирует управление моторами с использованием ШИМ-контроллера PCA9685.

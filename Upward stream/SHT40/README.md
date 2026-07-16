@@ -1,3 +1,3 @@
-# SHT40 Project
+# Проект SHT40
 
-This project is for the STM32F401CCU6 microcontroller. It demonstrates communication with the SHT40 temperature and humidity sensor.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Он демонстрирует связь с датчиком температуры и влажности SHT40.

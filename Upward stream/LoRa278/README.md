@@ -1,3 +1,3 @@
-# LoRa278 Project
+# Проект LoRa278
 
-This project is for the STM32F401CCU6 microcontroller. It is a comprehensive project that utilizes a LoRa module for communication along with multiple sensors including the HMC5883L (compass), BMP280 (pressure/temperature), and MPU6050 (accelerometer/gyroscope). It also uses the PCA9685 PWM controller for motor control.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Это комплексный проект, использующий модуль LoRa для связи вместе с несколькими датчиками, включая HMC5883L (компас), BMP280 (давление/температура) и MPU6050 (акселерометр/гироскоп). Он также использует ШИМ-контроллер PCA9685 для управления моторами.

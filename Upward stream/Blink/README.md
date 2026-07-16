@@ -1,3 +1,3 @@
-# Blink Project
+# Проект Blink
 
-This project is for the STM32F401CCU6 microcontroller. It is a basic LED blink project to verify the development environment and board operation.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Это базовый проект мигания светодиодом для проверки среды разработки и работы платы.

@@ -1,3 +1,3 @@
-# BMP388 Project
+# Проект BMP388
 
-This project is for the STM32F401CCU6 microcontroller. It demonstrates interaction with the BMP388 pressure and temperature sensor.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Он демонстрирует взаимодействие с датчиком давления и температуры BMP388.

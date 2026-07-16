@@ -1,3 +1,3 @@
-# PCA9685 Project
+# Проект PCA9685
 
-This project is for the STM32F401CCU6 microcontroller. It focuses on interacting with the PCA9685, a 16-channel, 12-bit PWM Fm+ I2C-bus LED controller often used for servo or motor control.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Он ориентирован на взаимодействие с PCA9685, 16-канальным 12-битным ШИМ I2C-контроллером светодиодов (используется часто для управления сервоприводами или моторами).

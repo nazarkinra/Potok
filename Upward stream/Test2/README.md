@@ -1,3 +1,3 @@
-# Test2 Project
+# Проект Test2
 
-This project is for the STM32F401CCU6 microcontroller. It serves as a basic test project involving GPIO configuration and usage.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Он служит базовым тестовым проектом, включающим конфигурацию и использование GPIO.

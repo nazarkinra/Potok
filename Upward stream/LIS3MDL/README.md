@@ -1,3 +1,3 @@
-# LIS3MDL Project
+# Проект LIS3MDL
 
-This project is for the STM32F401CCU6 microcontroller. It demonstrates interaction with the LIS3MDL 3-axis magnetometer.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Он демонстрирует взаимодействие с 3-осевым магнитометром LIS3MDL.

@@ -1,3 +1,3 @@
-# Test1 Project
+# Проект Test1
 
-This project is for the STM32F401CCU6 microcontroller. It is a test project that integrates the LIS3MDL magnetometer and the BMP388 pressure/temperature sensor.
+Этот проект предназначен для микроконтроллера STM32F401CCU6. Это тестовый проект, который интегрирует магнитометр LIS3MDL и датчик давления/температуры BMP388.
