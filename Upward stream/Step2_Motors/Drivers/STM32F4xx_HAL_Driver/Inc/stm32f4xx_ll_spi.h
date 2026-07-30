@@ -2039,3 +2039,4 @@ ErrorStatus LL_I2S_InitFullDuplex(SPI_TypeDef *I2Sxext, LL_I2S_InitTypeDef *I2S_
 #endif
 
 #endif /* STM32F4xx_LL_SPI_H */
+

@@ -8,7 +8,7 @@ class ArduinoLoRaGUI:
     def __init__(self, master):
         self.master = master
         master.title("LoRa Ground Station")
-        master.geometry("800x600")
+        master.geometry("1000x600")
 
         self.serial_port = None
         self.is_connected = False

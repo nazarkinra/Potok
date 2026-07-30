@@ -57,14 +57,14 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LED_PIN_3_Pin GPIO_PIN_13
-#define LED_PIN_3_GPIO_Port GPIOC
-#define DIO0_RADIO_Pin GPIO_PIN_0
+#define DIO0_RADIO_Pin GPIO_PIN_15
 #define DIO0_RADIO_GPIO_Port GPIOA
-#define CS_RADIO_Pin GPIO_PIN_13
-#define CS_RADIO_GPIO_Port GPIOB
-#define NRST_RADIO_Pin GPIO_PIN_5
-#define NRST_RADIO_GPIO_Port GPIOB
+#define RADIO_BUSY_Pin GPIO_PIN_3
+#define RADIO_BUSY_GPIO_Port GPIOB
+#define LED_PIN_1_Pin GPIO_PIN_8
+#define LED_PIN_1_GPIO_Port GPIOB
+#define LED_PIN_2_Pin GPIO_PIN_9
+#define LED_PIN_2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
