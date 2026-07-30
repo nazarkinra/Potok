@@ -34,8 +34,22 @@ class ArduinoLoRaGUI:
         self.status_label = ttk.Label(conn_frame, text="Disconnected", foreground="red")
         self.status_label.pack(side="right", padx=10)
 
+        # Dashboard Frame
+        dashboard_frame = ttk.LabelFrame(self.master, text="Glider Dashboard")
+        dashboard_frame.pack(fill="x", padx=10, pady=5)
+
+        self.state_var = tk.StringVar(value="State: UNKNOWN")
+        self.roll_var = tk.StringVar(value="Roll: 0.0")
+        self.pitch_var = tk.StringVar(value="Pitch: 0.0")
+        self.yaw_var = tk.StringVar(value="Yaw: 0.0")
+
+        ttk.Label(dashboard_frame, textvariable=self.state_var, font=("Arial", 12, "bold")).pack(side="left", padx=10)
+        ttk.Label(dashboard_frame, textvariable=self.roll_var, font=("Arial", 12)).pack(side="left", padx=10)
+        ttk.Label(dashboard_frame, textvariable=self.pitch_var, font=("Arial", 12)).pack(side="left", padx=10)
+        ttk.Label(dashboard_frame, textvariable=self.yaw_var, font=("Arial", 12)).pack(side="left", padx=10)
+
         # Telemetry Text Area
-        telemetry_frame = ttk.LabelFrame(self.master, text="Telemetry (Sensors)")
+        telemetry_frame = ttk.LabelFrame(self.master, text="Telemetry (Raw Log)")
         telemetry_frame.pack(fill="both", expand=True, padx=10, pady=5)
 
         self.telemetry_text = scrolledtext.ScrolledText(telemetry_frame, wrap=tk.WORD, height=15)
@@ -102,6 +116,24 @@ class ArduinoLoRaGUI:
                 break
 
     def log_telemetry(self, text):
+        # Parse Glider telemetry format: "ST:0 ROLL:1.23 PITCH:-4.56 YAW:0.00"
+        if "ROLL:" in text and "PITCH:" in text:
+            try:
+                parts = text.split()
+                for p in parts:
+                    if p.startswith("ST:"):
+                        state_num = int(p.split(":")[1])
+                        states = {0: "WAITING", 1: "FLIGHT", 2: "EMERGENCY"}
+                        self.state_var.set(f"State: {states.get(state_num, 'UNKNOWN')}")
+                    elif p.startswith("ROLL:"):
+                        self.roll_var.set(f"Roll: {p.split(':')[1]}")
+                    elif p.startswith("PITCH:"):
+                        self.pitch_var.set(f"Pitch: {p.split(':')[1]}")
+                    elif p.startswith("YAW:"):
+                        self.yaw_var.set(f"Yaw: {p.split(':')[1]}")
+            except Exception as e:
+                pass # Fallback to raw log if parsing fails
+
         self.telemetry_text.config(state=tk.NORMAL)
         self.telemetry_text.insert(tk.END, text + "\n")
         self.telemetry_text.see(tk.END)
