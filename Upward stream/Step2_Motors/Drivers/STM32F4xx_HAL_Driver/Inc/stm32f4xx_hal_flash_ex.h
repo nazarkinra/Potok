@@ -183,7 +183,7 @@ typedef struct
   */
 #define OB_RDP_LEVEL_0   ((uint8_t)0xAA)
 #define OB_RDP_LEVEL_1   ((uint8_t)0x55)
-#define OB_RDP_LEVEL_2   ((uint8_t)0xCC) /*!< Warning: When enabling read protection level 2
+#define OB_RDP_LEVEL_2   ((uint8_t)0xCC) /*!< Warning: When enabling read protection level 2 
                                               it s no more possible to go back to level 1 or 0 */
 /**
   * @}
@@ -1060,3 +1060,4 @@ void FLASH_FlushCaches(void);
 #endif
 
 #endif /* __STM32F4xx_HAL_FLASH_EX_H */
+
