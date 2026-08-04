@@ -66,8 +66,8 @@ all: main-build
 main-build: Blink.elf secondary-outputs
 
 # Tool invocations
-Blink.elf Blink.map: $(OBJS) $(USER_OBJS) /home/roman/STM32CubeIDE/MX/Blink/STM32F401CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Blink.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/roman/STM32CubeIDE/MX/Blink/STM32F401CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Blink.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Blink.elf Blink.map: $(OBJS) $(USER_OBJS) /mnt/D/STM32CubeIDE/Potok/Upward\ stream/Blink/STM32F401CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Blink.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/mnt/D/STM32CubeIDE/Potok/Upward stream/Blink/STM32F401CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Blink.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

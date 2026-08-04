@@ -108,6 +108,7 @@ int main(void)
   MX_I2C1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_GPIO_WritePin(LED_PIN_1_GPIO_Port, LED_PIN_1_Pin, 1);
   PCA9685_Init(1000);
   Motor_Init(&motorD, 0, 1);
   Motor_Init(&motorC, 2, 3);
@@ -129,8 +130,30 @@ int main(void)
   //move(-100, 0, 0);
   while (1)
   {
-	  move(100, 100, 100);
-	  move(-100, -100, -100);
+	  Motor_SetSpeed(&motorE, 100);
+	  HAL_Delay(250);
+	  Motor_SetSpeed(&motorE, -100);
+	  HAL_Delay(250);
+	  Motor_Brake(&motorE);
+	  Motor_Coast(&motorE);
+	  Motor_SetSpeed(&motorF, 100);
+	  HAL_Delay(250);
+	  Motor_SetSpeed(&motorF, -100);
+	  HAL_Delay(250);
+	  Motor_Brake(&motorF);
+	  Motor_Coast(&motorF);
+	  Motor_SetSpeed(&motorC, 100);
+	  HAL_Delay(250);
+	  Motor_SetSpeed(&motorC, -100);
+	  HAL_Delay(250);
+	  Motor_Brake(&motorC);
+	  Motor_Coast(&motorC);
+	  Motor_SetSpeed(&motorD, 100);
+	  HAL_Delay(250);
+	  Motor_SetSpeed(&motorD, -100);
+	  HAL_Delay(250);
+	  Motor_Brake(&motorD);
+	  Motor_Coast(&motorD);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
