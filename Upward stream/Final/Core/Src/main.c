@@ -83,6 +83,7 @@ uint16_t MY_NODE_ID = 0xBBB9;
 bool bmi_ok = false;
 bool lis_ok = false;
 bool bmp_ok = false;
+bool lora_ready = false; // Флаг готовности LoRa для логов
 
 // Глобальный буфер для хранения самых свежих данных
 TelemetryPacket_t current_pkt;
@@ -99,6 +100,31 @@ void SystemClock_Config(void);
 void OnLoRaPacketReceived(int packetSize) {
     _pendingLength = packetSize;
     _packetReady = true;
+}
+
+// Универсальная функция для отправки логов в UART и по LoRa
+void Send_Log(const char* msg) {
+    // Вывод в UART (для локальной отладки)
+    Serial_Printf(&huart1, "%s\r\n", msg);
+
+    // Если LoRa уже работает, отправляем в радиоэфир
+    if (lora_ready) {
+        uint8_t lora_buf[128];
+
+        // 1. Первые 2 байта всегда жестко задаем как наш бинарный ID (0xBBB9)
+        uint16_t* id_ptr = (uint16_t*)lora_buf;
+        *id_ptr = MY_NODE_ID;
+
+        // 2. Начиная с 3-го байта (индекс 2) пишем сам текст
+        int len = snprintf((char*)(lora_buf + 2), sizeof(lora_buf) - 2, "LOG: %s", msg);
+
+        LoRa_BeginPacket(0);
+        LoRa_Write(lora_buf, len + 2); // Длина текста + 2 байта ID
+        LoRa_EndPacket(0);
+
+        LoRa_Receive(0);
+        HAL_Delay(50);
+    }
 }
 /* USER CODE END 0 */
 
@@ -147,34 +173,10 @@ int main(void)
         Serial_Printf(&huart1, "MCP23017 OK\r\n");
     }
 
+    // Подтягиваем CS всех датчиков
     MCP23017_WriteAll(0xFFFF);
 
-    if (BMI088_Init(&hspi1) != HAL_OK) {
-        Serial_Printf(&huart1, "BMI088 init failed!\r\n");
-        bmi_ok = false;
-    } else {
-        Serial_Printf(&huart1, "BMI088 OK. Calibrating...\r\n");
-        BMI088_CalibrateGyro(&hspi1, 200);
-        bmi_ok = true;
-    }
-
-    if (LIS3MDL_Init() != 1) {
-        Serial_Printf(&huart1, "LIS3MDL init failed!\r\n");
-        lis_ok = false;
-    } else {
-        Serial_Printf(&huart1, "LIS3MDL OK\r\n");
-        lis_ok = true;
-        LIS3MDL_Calibrate();
-    }
-
-    if (BMP388_Init() != BMP388_OK) {
-        Serial_Printf(&huart1, "BMP388 init failed!\r\n");
-        bmp_ok = false;
-    } else {
-        Serial_Printf(&huart1, "BMP388 OK\r\n");
-        bmp_ok = true;
-    }
-
+    // Инициализируем LoRa ПЕРВЫМ из датчиков, чтобы отправлять статусы остальных
     LoRa_Init();
     if (!LoRa_Begin(441000000)) {
         Serial_Printf(&huart1, "LoRa init failed!\r\n");
@@ -188,17 +190,43 @@ int main(void)
 
         LoRa_OnReceive(OnLoRaPacketReceived);
         LoRa_Receive(0);
-        Serial_Printf(&huart1, "LoRa Ready!\r\n");
+        lora_ready = true; // Разрешаем отправку логов по радио
+        Send_Log("LoRa Ready!");
+    }
+
+    if (BMI088_Init(&hspi1) != HAL_OK) {
+        Send_Log("BMI088 init failed!");
+        bmi_ok = false;
+    } else {
+        Send_Log("BMI088 OK. Calibrating...");
+        BMI088_CalibrateGyro(&hspi1, 200);
+        bmi_ok = true;
+    }
+
+    if (LIS3MDL_Init() != 1) {
+        Send_Log("LIS3MDL init failed!");
+        lis_ok = false;
+    } else {
+        Send_Log("LIS3MDL OK");
+        lis_ok = true;
+        //LIS3MDL_Calibrate();
+    }
+
+    if (BMP388_Init() != BMP388_OK) {
+        Send_Log("BMP388 init failed!");
+        bmp_ok = false;
+    } else {
+        Send_Log("BMP388 OK");
+        bmp_ok = true;
+    }
+
+    if (SD_MCP_Init(&hspi2) != 0) {
+        Send_Log("SD Init Failed!");
+    } else {
+        Send_Log("SD OK!");
     }
 
     HAL_ADC_Start(&hadc1);
-
-    // Инициализация SD карты
-    if (SD_MCP_Init(&hspi2) != 0) {
-        Serial_Printf(&huart1, "SD Init Failed!\r\n");
-    } else {
-        Serial_Printf(&huart1, "SD OK!\r\n");
-    }
 
     uint32_t last_poll_tick = HAL_GetTick();
     uint32_t last_sd_tick   = HAL_GetTick();
@@ -218,6 +246,8 @@ int main(void)
       BMI088_Raw_t raw;
       BMI088_Physical_t phys;
 
+      Send_Log("INIT DONE. Entering main loop...");
+
       while (1)
       {
           // --- 1. Обработка входящих команд LoRa ---
@@ -231,12 +261,16 @@ int main(void)
                       ptr[i++] = (uint8_t)LoRa_Read();
                   }
                   if (rx_cmd.target_id == MY_NODE_ID || rx_cmd.target_id == 0xFF) {
-                      Serial_Printf(&huart1, "RX CMD | ID: 0x%02X, Param: %d\r\n", rx_cmd.cmd_id, rx_cmd.param);
+                      char cmd_log[64];
+                      snprintf(cmd_log, sizeof(cmd_log), "RX CMD | ID: 0x%02X, Param: %d", rx_cmd.cmd_id, rx_cmd.param);
+                      Send_Log(cmd_log);
+
                       switch (rx_cmd.cmd_id) {
                           case 0x01:
                               HAL_GPIO_WritePin(LED_PIN_1_GPIO_Port, LED_PIN_1_Pin, rx_cmd.param ? GPIO_PIN_SET : GPIO_PIN_RESET);
                               break;
                           case 0x02:
+                              Send_Log("Action: System Rebooting...");
                               HAL_Delay(100);
                               NVIC_SystemReset();
                               break;
@@ -323,7 +357,6 @@ int main(void)
                                    ((uint32_t)current_pkt.pressure[1] << 8) |
                                    current_pkt.pressure[2];
 
-              // Формируем CSV строку со всеми данными, ID выводим как строку
               snprintf(sd_buffer, sizeof(sd_buffer), "%X,%d,%d,%d,%d,%d,%d,%d,%d,%d,%lu,%d,%u\n",
                        current_pkt.node_id,
                        current_pkt.accel_x, current_pkt.accel_y, current_pkt.accel_z,

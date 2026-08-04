@@ -51,7 +51,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-Servo_HandleTypeDef myServo;
+Servo_HandleTypeDef myServo1;
+Servo_HandleTypeDef myServo2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -114,7 +115,8 @@ int main(void)
     }
 
     // Инициализация сервопривода на 6-й канал PCA9685
-    Servo_Init(&myServo, 4);
+    Servo_Init(&myServo1, 7);
+    Servo_Init(&myServo2, 4);
 
     Serial_Printf(&huart1, "PCA9685 initialized. Starting servo sequence...\r\n");
   /* USER CODE END 2 */
@@ -134,32 +136,28 @@ int main(void)
               // Автомат состояний для движения по кругу: 90 -> 0 -> 90 -> 180 -> 90 -> ...
               switch (servo_step) {
                   case 0:
-                      Servo_SetAngle(&myServo, 90);
+                      Servo_SetAngle(&myServo1, 90);
+                      Servo_SetAngle(&myServo2, 90);
                       Serial_Printf(&huart1, "Servo: 90 deg\r\n");
                       servo_step = 1;
                       break;
                   case 1:
-                      Servo_SetAngle(&myServo, 0);
+                      Servo_SetAngle(&myServo1, 0);
+                      Servo_SetAngle(&myServo2, 0);
                       Serial_Printf(&huart1, "Servo: 0 deg\r\n");
-                      servo_step = 2;
+                      servo_step = 0;
                       break;
                   case 2:
-                      Servo_SetAngle(&myServo, 90);
+                      Servo_SetAngle(&myServo2, 90);
                       Serial_Printf(&huart1, "Servo: 90 deg\r\n");
                       servo_step = 3;
                       break;
                   case 3:
-                      Servo_SetAngle(&myServo, 180);
+                      Servo_SetAngle(&myServo2, 0);
                       Serial_Printf(&huart1, "Servo: 180 deg\r\n");
-                      servo_step = 4;
-                      break;
-                  case 4:
-                      Servo_SetAngle(&myServo, 90);
-                      Serial_Printf(&huart1, "Servo: 90 deg\r\n");
-                      servo_step = 0; // Закольцовываем, возвращаясь к первому шагу
+                      servo_step = 0;
                       break;
               }
-              HAL_Delay(2000);
           }
     /* USER CODE END WHILE */
 
