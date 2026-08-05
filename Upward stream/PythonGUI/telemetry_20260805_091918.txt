@@ -1,0 +1,37 @@
+[09:19:18.555] === Session Started. Logging to telemetry_20260805_091918.txt ===
+[09:19:20.118] LoRa Ground Station Init...
+[09:19:20.158] Ready. Waiting for telemetry & logs...
+[09:19:35.761] Node: BBB9 | LOG: LoRa Ready!
+[09:19:36.250] Node: BBB9 | LOG: BMI088 OK. Calibrating...
+[09:19:40.099] Node: BBB9 | LOG: LIS3MDL OK
+[09:19:40.268] Node: BBB9 | LOG: BMP388 OK
+[09:19:41.070] Node: BBB9 | LOG:
+[09:19:41.099] [MAIN] SD карта готова.
+[09:19:41.740] Node: BBB9 | LOG: [MAIN] Файл data.csv открыт для записи.
+[09:19:41.912] Node: BBB9 | LOG: INIT DONE. Entering main loop...
+[09:19:42.087] Node: BBB9 | LOG: >>> DROP DETECTED! <<<
+[09:19:43.206] Node: BBB9 | Acc: -0.13,-0.04,0.93 | Gyr: 27.01,-1.40,7.38 | Mag: -887,-758,-1946 | Alt: -81.30 m | Temp: 23.34 C | Flags: 0x17
+[09:19:44.364] Node: BBB9 | Acc: -0.15,-0.08,1.01 | Gyr: 9.35,-10.90,1.63 | Mag: -962,-788,-1947 | Alt: -82.60 m | Temp: 23.36 C | Flags: 0x17
+[09:19:44.445] Node: BBB9 | LOG: >>> 2s DELAY OVER. PULL UP! <<<
+[09:19:44.976] Node: BBB9 | LOG: LoRa Ready!
+[09:19:45.465] Node: BBB9 | LOG: BMI088 OK. Calibrating...
+[09:19:49.317] Node: BBB9 | LOG: LIS3MDL OK
+[09:19:49.487] Node: BBB9 | LOG: BMP388 OK
+[09:19:50.288] Node: BBB9 | LOG:
+[09:19:50.319] [MAIN] SD карта готова.
+[09:19:50.959] Node: BBB9 | LOG: [MAIN] Файл data.csv открыт для записи.
+[09:19:51.131] Node: BBB9 | LOG: INIT DONE. Entering main loop...
+[09:19:51.306] Node: BBB9 | LOG: >>> DROP DETECTED! <<<
+[09:19:52.508] Node: BBB9 | Acc: -0.07,-0.01,0.99 | Gyr: -11.78,21.28,-4.29 | Mag: -1048,-620,-1923 | Alt: -77.70 m | Temp: 23.49 C | Flags: 0x17
+[09:19:53.583] Node: BBB9 | Acc: -0.01,0.09,0.99 | Gyr: 5.16,16.72,-9.13 | Mag: -1107,-820,-1728 | Alt: -71.80 m | Temp: 23.67 C | Flags: 0x17
+[09:19:53.664] Node: BBB9 | LOG: >>> 2s DELAY OVER. PULL UP! <<<
+[09:19:54.189] Node: BBB9 | LOG: LoRa Ready!
+[09:19:54.732] Node: BBB9 | LOG: LoRa Ready!
+[09:19:54.902] Node: BBB9 | LOG: PCA9685 is online!
+[09:19:55.221] Node: BBB9 | LOG: BMI088 OK. Calibrating...
+[09:19:59.073] Node: BBB9 | LOG: LIS3MDL OK
+[09:19:59.242] Node: BBB9 | LOG: BMP388 OK
+[09:20:00.044] Node: BBB9 | LOG:
+[09:20:00.074] [MAIN] SD карта готова.
+[09:20:00.716] Node: BBB9 | LOG: [MAIN] Файл data.csv открыт для записи.
+[09:20:00.888] Node: BBB9 | LOG: INIT DONE. Entering main loop...

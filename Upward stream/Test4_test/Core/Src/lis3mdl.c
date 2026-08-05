@@ -4,11 +4,27 @@
 
 extern UART_HandleTypeDef huart1;
 
-// Глобальные переменные калибровки
+extern SPI_HandleTypeDef hspi1;
+
+// Массивы, которые ищет ваш компилятор для функций LIS3MDL_Read_Mag и LIS3MDL_Calibrate
 float mag_offset[3] = {0.0f, 0.0f, 0.0f};
 float mag_scale[3]  = {1.0f, 1.0f, 1.0f};
 
-extern SPI_HandleTypeDef hspi1;
+// Функция для записи калибровок из файла в библиотеку
+void LIS3MDL_SetCalibration(float ox, float oy, float oz, float sx, float sy, float sz) {
+    mag_offset[0] = ox; mag_offset[1] = oy; mag_offset[2] = oz;
+    mag_scale[0] = sx;  mag_scale[1] = sy;  mag_scale[2] = sz;
+}
+
+// Функция для получения новых калибровок после процедуры LIS3MDL_Calibrate()
+void LIS3MDL_GetCalibration(float *ox, float *oy, float *oz, float *sx, float *sy, float *sz) {
+    *ox = mag_offset[0]; *oy = mag_offset[1]; *oz = mag_offset[2];
+    *sx = mag_scale[0];  *sy = mag_scale[1];  *sz = mag_scale[2];
+}
+
+// ВАЖНО: В вашей функции LIS3MDL_Read_Mag (или там, где вы переводите сырые данные в Гауссы)
+// обязательно вычитайте эти переменные из итогового результата, точно так же, как мы это
+// делали для акселерометра и гироскопа.
 
 static uint8_t SPI_WriteByte(uint8_t data) {
     uint8_t received = 0;

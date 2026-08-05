@@ -9,7 +9,7 @@ const int irqPin = 2;
 // Наш ID, который мы ожидаем слушать
 const uint16_t MY_TARGET_ID = 0xBBB9;
 
-// Структура телеметрии 
+// Структура телеметрии (Обновленная: altitude вместо pressure)
 typedef struct __attribute__((packed)) {
   uint16_t node_id;
   int16_t  accel_x;
@@ -21,13 +21,14 @@ typedef struct __attribute__((packed)) {
   int16_t  mag_x;
   int16_t  mag_y;
   int16_t  mag_z;
-  int16_t  altitude;
+  int16_t  altitude; // <-- Теперь здесь высота в дециметрах
   int16_t  temperature;
+  uint16_t photo;
   uint8_t  state_flags;
   uint8_t  checksum;
 } TelemetryPacket_t;
 
-// Структура команды (Добавь/замени этот блок!)
+// Структура команды
 typedef struct __attribute__((packed)) {
   uint16_t target_id;
   uint8_t  cmd_id;
@@ -54,6 +55,8 @@ void setup() {
   LoRa.setCodingRate4(5);          
   LoRa.enableCrc();                
   LoRa.setSyncWord(0x12);          
+  
+  // Мощность снижена до 10, чтобы избежать просадок напряжения (Brownout)
   LoRa.setTxPower(10);             
 
   Serial.println(F("Ready. Waiting for telemetry & logs..."));
@@ -73,25 +76,22 @@ void loop() {
       buffer[len++] = LoRa.read();
     }
 
-    // --- САМАЯ ПЕРВАЯ ПРОВЕРКА: НАШ ЛИ ЭТО ПЛАНЕР? ---
+    // --- ПЕРВАЯ ПРОВЕРКА: НАШ ЛИ ЭТО ПЛАНЕР? ---
     // Читаем первые 2 байта буфера как uint16_t
     uint16_t received_id = *((uint16_t*)buffer);
     
     if (received_id == MY_TARGET_ID) {
-      // Пакет точно от нашего устройства. Разбираемся, что внутри:
-
-      // ВАРИАНТ А: Это бинарная телеметрия (проверяем по фиксированному размеру)
+      // ВАРИАНТ А: Это бинарная телеметрия
       if (len == sizeof(TelemetryPacket_t)) {
         TelemetryPacket_t* rx_pkt = (TelemetryPacket_t*)buffer;
         
-        // Проверяем контрольную сумму (ID проверять уже не нужно, мы это сделали)
+        // Проверяем контрольную сумму
         uint8_t calc_crc = 0;
         for (size_t i = 0; i < sizeof(TelemetryPacket_t) - 1; i++) {
           calc_crc ^= buffer[i];
         }
 
         if (calc_crc == rx_pkt->checksum) {
-
           // Выводим телеметрию для Python
           Serial.print(F("Node: ")); Serial.print(rx_pkt->node_id, HEX);
           
@@ -110,24 +110,25 @@ void loop() {
           Serial.print(rx_pkt->mag_y); Serial.print(F(","));
           Serial.print(rx_pkt->mag_z);
           
+          // Выводим высоту (делим на 10.0, так как STM32 шлет дециметры)
           Serial.print(F(" | Alt: ")); Serial.print(rx_pkt->altitude / 10.0); Serial.print(F(" m"));
           Serial.print(F(" | Temp: ")); Serial.print(rx_pkt->temperature / 100.0); Serial.print(F(" C"));
+          Serial.print(F(" | Photo: ")); Serial.print(rx_pkt->photo);
           
           Serial.print(F(" | Flags: 0x")); Serial.println(rx_pkt->state_flags, HEX);
         } else {
           Serial.println(F("Error: Telemetry Checksum mismatch!"));
         }
       } 
-      // ВАРИАНТ Б: Это текстовый лог (проверяем по префиксу "LOG:" после 2-х байт ID)
+      // ВАРИАНТ Б: Это текстовый лог (проверяем по префиксу "LOG:")
       else if (len >= 6 && buffer[2] == 'L' && buffer[3] == 'O' && buffer[4] == 'G') {
         buffer[len] = '\0'; // Обезопасим строку нуль-терминатором
         
-        // Печатаем ID в HEX формате, чтобы в Python было видно, от кого лог
         Serial.print(F("Node: ")); 
         Serial.print(received_id, HEX);
         Serial.print(F(" | "));
         
-        // Печатаем саму строку, пропуская первые 2 байта (которые занимает бинарный ID)
+        // Печатаем саму строку, пропуская первые 2 байта ID
         Serial.println((char*)(buffer + 2));
       } 
       else {
@@ -135,12 +136,9 @@ void loop() {
         Serial.println(len);
       }
     } 
-    else {
-      // Чужой пакет (received_id != MY_TARGET_ID). Просто игнорируем.
-    }
     
   } else if (packetSize > 0) {
-    // Вычитываем из буфера обрывки или единичные случайные байты
+    // Вычитываем из буфера обрывки или случайные байты, чтобы очистить FIFO
     while (LoRa.available()) LoRa.read();
   }
 
@@ -149,7 +147,7 @@ void loop() {
     String input = Serial.readStringUntil('\n');
     input.trim();
 
-    // Ожидаем текстовую команду в формате: "CMD <cmd_id> <param>" (например, "CMD 16 90")
+    // Ожидаем текстовую команду в формате: "CMD <cmd_id> <param>"
     if (input.startsWith("CMD ")) {
       int firstSpace = input.indexOf(' ');
       int secondSpace = input.indexOf(' ', firstSpace + 1);
@@ -161,11 +159,11 @@ void loop() {
 
         // Заполняем структуру пакета
         CommandPacket_t tx_cmd;
-        tx_cmd.target_id = MY_TARGET_ID; // Твой ID 0xBBB9
+        tx_cmd.target_id = MY_TARGET_ID; // 0xBBB9
         tx_cmd.cmd_id = cmd_id;
         tx_cmd.param = param;
 
-        // Рассчитываем контрольную сумму перед отправкой (XOR всех байт кроме последнего)
+        // Рассчитываем контрольную сумму перед отправкой (XOR всех байт)
         uint8_t calc_crc = 0;
         uint8_t *ptr = (uint8_t*)&tx_cmd;
         for (size_t i = 0; i < sizeof(CommandPacket_t) - 1; i++) {
@@ -178,7 +176,8 @@ void loop() {
         LoRa.write((uint8_t*)&tx_cmd, sizeof(CommandPacket_t));
         LoRa.endPacket();
 
-        //LoRa.receive();
+        // ВНИМАНИЕ: Вызова LoRa.receive() здесь быть НЕ ДОЛЖНО, 
+        // иначе будет конфликт с LoRa.parsePacket() в начале цикла!
 
         // Выводим подтверждение в лог
         Serial.print(F("Node: "));

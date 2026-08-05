@@ -22,5 +22,7 @@ uint8_t LIS3MDL_Init(void);
 void LIS3MDL_Read_Mag(int16_t* mx, int16_t* my, int16_t* mz);
 uint8_t LIS3MDL_ReadReg(uint8_t reg);
 void LIS3MDL_Calibrate(void);
+void LIS3MDL_SetCalibration(float ox, float oy, float oz, float sx, float sy, float sz);
+void LIS3MDL_GetCalibration(float *ox, float *oy, float *oz, float *sx, float *sy, float *sz);
 
 #endif // LIS3MDL_H

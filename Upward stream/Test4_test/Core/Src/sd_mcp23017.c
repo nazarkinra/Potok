@@ -93,3 +93,30 @@ uint8_t SD_MCP_WriteFile(const char *filename, const char *data) {
 
     return 0;
 }
+
+// Перезаписывает файл конфигурации новыми данными
+uint8_t SD_MCP_SaveConfig(const char *filename, void *cfg_data, uint16_t size) {
+    FIL cfg_file;
+    UINT bw;
+
+    // FA_CREATE_ALWAYS создаст новый файл или полностью перезапишет старый
+    if (f_open(&cfg_file, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK) {
+        f_write(&cfg_file, cfg_data, size, &bw);
+        f_close(&cfg_file);
+        return (bw == size) ? 0 : 2;
+    }
+    return 1;
+}
+
+// Загружает данные из файла в структуру
+uint8_t SD_MCP_LoadConfig(const char *filename, void *cfg_data, uint16_t size) {
+    FIL cfg_file;
+    UINT br;
+
+    if (f_open(&cfg_file, filename, FA_READ) == FR_OK) {
+        f_read(&cfg_file, cfg_data, size, &br);
+        f_close(&cfg_file);
+        return (br == size) ? 0 : 2;
+    }
+    return 1; // Файл не найден
+}

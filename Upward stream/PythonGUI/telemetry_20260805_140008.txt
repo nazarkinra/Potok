@@ -1,0 +1,90 @@
+[14:00:08.653] === Session Started. Logging to telemetry_20260805_140008.txt ===
+[14:00:10.220] LoRa Ground Station Init...
+[14:00:10.260] Ready. Waiting for telemetry & logs...
+[14:07:23.181] Node: BBB9 | LOG: LoRa Ready!
+[14:07:23.351] Node: BBB9 | LOG: PCA9685 is online!
+[14:07:23.669] Node: BBB9 | LOG: BMI088 OK. Calibrating...
+[14:09:39.562] Node: BBB9 | LOG: LoRa Ready!
+[14:09:39.731] Node: BBB9 | LOG: PCA9685 is online!
+[14:09:40.049] Node: BBB9 | LOG: BMI088 OK. Calibrating...
+[14:09:43.884] Node: BBB9 | LOG: LIS3MDL OK
+[14:09:44.053] Node: BBB9 | LOG: BMP388 OK
+[14:09:44.851] Node: BBB9 | LOG:
+[14:09:44.881] [MAIN] SD карта готова.
+[14:09:45.204] Node: BBB9 | LOG: [MAIN] Config not found! Creating default...
+[14:09:46.475] Node: BBB9 | LOG: [MAIN] Файл data.csv открыт для записи.
+[14:09:46.822] Node: BBB9 | LOG: >>> DROP DETECTED! <<<
+[14:09:47.355] Node: BBB9 | LOG: >>> AUTO PARACHUTE (Alt <= 200m). IGNITER ON! <<<
+[14:09:47.832] Node: BBB9 | Acc: 0.02,0.11,0.99 | Gyr: 0.29,-0.07,0.33 | Mag: 228,-654,-1618 | Alt: -123.80 m | Temp: 30.86 C | Flags: 0x17
+[14:09:48.911] Node: BBB9 | Acc: 0.02,0.12,0.99 | Gyr: -0.73,-0.40,0.63 | Mag: 229,-662,-1620 | Alt: -124.50 m | Temp: 29.68 C | Flags: 0x4F
+[14:09:50.068] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -0.55,-0.92,0.75 | Mag: 221,-654,-1629 | Alt: -124.50 m | Temp: 29.68 C | Flags: 0x4F
+[14:09:51.150] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -0.15,-0.32,-0.02 | Mag: 219,-663,-1629 | Alt: -124.40 m | Temp: 29.68 C | Flags: 0x4F
+[14:09:52.309] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -0.42,-1.05,0.02 | Mag: 217,-657,-1627 | Alt: -124.00 m | Temp: 29.68 C | Flags: 0x4F
+[14:09:53.395] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.20,-0.15,-0.99 | Mag: 209,-659,-1628 | Alt: -124.70 m | Temp: 29.68 C | Flags: 0x4F
+[14:09:54.433] Node: BBB9 | Acc: 0.02,0.13,0.99 | Gyr: -1.18,-0.17,-0.13 | Mag: 223,-650,-1634 | Alt: -124.80 m | Temp: 29.68 C | Flags: 0x4F
+[14:09:55.518] Node: BBB9 | Acc: 0.03,0.12,1.00 | Gyr: -0.36,0.88,-0.05 | Mag: 207,-654,-1634 | Alt: -124.30 m | Temp: 29.68 C | Flags: 0x4F
+[14:09:56.680] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -0.42,0.21,-0.18 | Mag: 213,-657,-1620 | Alt: -125.20 m | Temp: 29.68 C | Flags: 0x4F
+[14:09:57.762] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.15,-0.13,0.53 | Mag: 211,-658,-1642 | Alt: -124.70 m | Temp: 29.68 C | Flags: 0x4F
+[14:09:59.156] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.06,-0.36,-0.30 | Mag: 213,-648,-1647 | Alt: -124.70 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:01.485] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.25,-0.21,-0.28 | Mag: 216,-655,-1632 | Alt: -125.00 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:02.569] Node: BBB9 | Acc: 0.02,0.11,0.99 | Gyr: 0.18,0.66,-0.23 | Mag: 222,-663,-1644 | Alt: -125.00 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:03.739] Node: BBB9 | Acc: 0.03,0.13,1.00 | Gyr: -0.85,0.35,-0.74 | Mag: 212,-653,-1640 | Alt: -125.40 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:04.819] Node: BBB9 | Acc: 0.03,0.12,1.00 | Gyr: 0.63,0.20,1.12 | Mag: 213,-661,-1646 | Alt: -124.30 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:05.979] Node: BBB9 | Acc: 0.03,0.12,1.00 | Gyr: 0.97,0.33,0.29 | Mag: 201,-665,-1623 | Alt: -125.50 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:07.069] Node: BBB9 | Acc: 0.04,0.12,0.99 | Gyr: -0.47,-0.14,0.91 | Mag: 205,-662,-1640 | Alt: -124.10 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:08.225] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.01,0.12,0.31 | Mag: 217,-661,-1633 | Alt: -125.50 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:09.309] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.24,-0.02,-0.08 | Mag: 219,-652,-1613 | Alt: -124.50 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:10.359] Node: BBB9 | Acc: 0.03,0.12,1.00 | Gyr: 0.26,0.23,0.22 | Mag: 210,-657,-1641 | Alt: -124.70 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:11.442] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -0.23,-0.72,-0.66 | Mag: 211,-655,-1614 | Alt: -123.80 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:12.603] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -1.16,-0.30,-0.11 | Mag: 207,-672,-1621 | Alt: -125.10 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:13.689] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 1.38,-0.21,1.87 | Mag: 225,-659,-1647 | Alt: -124.10 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:14.852] Node: BBB9 | Acc: 0.02,0.13,0.99 | Gyr: 0.40,0.23,-0.15 | Mag: 209,-664,-1617 | Alt: -124.20 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:15.933] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.34,0.14,0.40 | Mag: 207,-666,-1624 | Alt: -124.80 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:17.331] Node: BBB9 | Acc: 0.03,0.13,0.99 | Gyr: -1.51,-0.47,-0.23 | Mag: 210,-665,-1640 | Alt: -124.80 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:18.497] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.20,-0.40,0.29 | Mag: 221,-663,-1635 | Alt: -124.80 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:19.657] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.15,-0.25,0.00 | Mag: 218,-657,-1641 | Alt: -124.30 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:20.747] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -0.55,-0.09,-0.20 | Mag: 206,-651,-1641 | Alt: -124.30 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:21.907] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -0.07,0.35,-0.60 | Mag: 207,-656,-1651 | Alt: -125.10 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:22.992] Node: BBB9 | Acc: 0.03,0.12,1.00 | Gyr: 1.02,1.03,0.32 | Mag: 221,-658,-1645 | Alt: -125.20 m | Temp: 29.62 C | Flags: 0x4F
+[14:10:24.157] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -0.14,-0.22,-0.60 | Mag: 211,-651,-1640 | Alt: -124.70 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:25.243] Node: BBB9 | Acc: 0.03,0.12,1.00 | Gyr: -0.54,0.39,0.52 | Mag: 214,-660,-1621 | Alt: -124.80 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:26.404] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.62,0.54,1.07 | Mag: 201,-672,-1641 | Alt: -124.10 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:27.487] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.45,0.05,0.84 | Mag: 209,-662,-1627 | Alt: -125.00 m | Temp: 29.62 C | Flags: 0x4F
+[14:10:28.700] Node: BBB9 | Acc: 0.02,0.12,0.99 | Gyr: 0.37,1.16,1.48 | Mag: 212,-658,-1648 | Alt: -125.20 m | Temp: 29.68 C | Flags: 0x4F
+[14:10:29.787] Node: BBB9 | Acc: 0.03,0.12,1.00 | Gyr: -0.60,0.26,-0.08 | Mag: 211,-658,-1620 | Alt: -124.20 m | Temp: 29.62 C | Flags: 0x4F
+[14:10:30.949] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.38,-0.69,-0.18 | Mag: 216,-661,-1637 | Alt: -125.70 m | Temp: 29.62 C | Flags: 0x4F
+[14:10:32.032] Node: BBB9 | Acc: 0.03,0.11,0.99 | Gyr: 0.35,0.67,-0.40 | Mag: 213,-648,-1644 | Alt: -125.70 m | Temp: 29.62 C | Flags: 0x4F
+[14:10:33.191] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: -1.14,0.03,-0.92 | Mag: 227,-665,-1637 | Alt: -124.60 m | Temp: 29.62 C | Flags: 0x4F
+[14:10:34.272] Node: BBB9 | Acc: 0.03,0.12,1.00 | Gyr: 0.41,0.38,0.42 | Mag: 211,-674,-1629 | Alt: -124.80 m | Temp: 29.62 C | Flags: 0x4F
+[14:10:34.797] >> PC Request: Sent SYS CMD 64
+[14:10:34.859] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:10:41.897] >> PC Request: Sent SYS CMD 64
+[14:10:41.959] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:10:45.171] >> PC Request: Sent SYS CMD 64
+[14:10:45.233] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:10:45.379] >> PC Request: Sent SYS CMD 64
+[14:10:45.761] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:10:56.537] >> PC Request: Sent SYS CMD 65
+[14:10:56.598] Node: BBB9 | LOG: Sent CMD 0x41 with Param 0
+[14:10:59.882] >> PC Request: Sent SYS CMD 65
+[14:10:59.944] Node: BBB9 | LOG: Sent CMD 0x41 with Param 0
+[14:11:00.546] >> PC Request: Sent SYS CMD 65
+[14:11:00.608] Node: BBB9 | LOG: Sent CMD 0x41 with Param 0
+[14:11:18.963] >> PC Request: Sent SYS CMD 64
+[14:11:19.025] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:11:19.756] >> PC Request: Sent SYS CMD 64
+[14:11:19.818] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:11:19.940] >> PC Request: Sent SYS CMD 64
+[14:11:20.117] >> PC Request: Sent SYS CMD 64
+[14:11:20.316] >> PC Request: Sent SYS CMD 64
+[14:11:20.362] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:11:20.395] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:11:20.548] >> PC Request: Sent SYS CMD 64
+[14:11:20.804] >> PC Request: Sent SYS CMD 64
+[14:11:20.893] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:11:20.924] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:11:21.357] >> PC Request: Sent SYS CMD 64
+[14:11:21.422] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:11:21.455] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:11:21.789] >> PC Request: Sent SYS CMD 64
+[14:11:21.947] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0

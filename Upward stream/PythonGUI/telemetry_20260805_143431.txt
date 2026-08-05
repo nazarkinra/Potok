@@ -1,0 +1,165 @@
+[14:34:31.672] === Session Started. Logging to telemetry_20260805_143431.txt ===
+[14:34:33.242] LoRa Ground Station Init...
+[14:34:33.283] Ready. Waiting for telemetry & logs...
+[14:34:34.172] Node: BBB9 | Acc: 0.05,0.13,0.99 | Gyr: -0.07,0.39,-0.24 | Mag: 188,-659,-1705 | Alt: -127.20 m | Temp: 29.75 C | Flags: 0x4F
+[14:34:35.337] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.20,0.92,0.33 | Mag: 197,-692,-1680 | Alt: -127.50 m | Temp: 29.75 C | Flags: 0x4F
+[14:34:36.496] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.24,-0.36,0.07 | Mag: 191,-670,-1696 | Alt: -126.80 m | Temp: 29.75 C | Flags: 0x4F
+[14:34:37.576] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.06,0.11,0.75 | Mag: 191,-681,-1705 | Alt: -126.80 m | Temp: 29.75 C | Flags: 0x4F
+[14:34:38.736] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.10,0.03,-0.40 | Mag: 191,-673,-1698 | Alt: -126.60 m | Temp: 29.75 C | Flags: 0x4F
+[14:34:42.979] Node: BBB9 | LOG: LoRa Ready!
+[14:34:43.148] Node: BBB9 | LOG: PCA9685 is online!
+[14:34:47.298] Node: BBB9 | LOG: LIS3MDL OK
+[14:34:47.466] Node: BBB9 | LOG: BMP388 OK
+[14:34:48.264] Node: BBB9 | LOG:
+[14:34:48.294] [MAIN] SD карта готова.
+[14:34:48.704] Node: BBB9 | LOG: [MAIN] Config not found! Creating default...
+[14:34:50.230] Node: BBB9 | LOG: [MAIN] Файл data.csv открыт для записи.
+[14:34:51.660] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.25,-0.38,0.20 | Mag: 0,0,0 | Alt: -126.80 m | Temp: 29.75 C | Flags: 0xF
+[14:34:52.800] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.35,-0.96,-0.14 | Mag: 0,0,0 | Alt: -126.70 m | Temp: 29.75 C | Flags: 0xF
+[14:34:52.900] Node: BBB9 | LOG: >>> DROP DETECTED (2s delay)! <<<
+[14:34:53.891] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.26,-0.31,1.07 | Mag: 0,0,0 | Alt: -126.30 m | Temp: 29.75 C | Flags: 0x1F
+[14:34:54.952] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 1.36,-0.35,0.04 | Mag: 0,0,0 | Alt: -126.50 m | Temp: 29.75 C | Flags: 0x1F
+[14:34:55.048] Node: BBB9 | LOG: >>> 2s DELAY OVER. PULL UP! <<<
+[14:34:56.124] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.59,-0.89,-1.14 | Mag: 0,0,0 | Alt: -126.70 m | Temp: 29.75 C | Flags: 0x2F
+[14:34:57.186] Node: BBB9 | Acc: 0.06,0.12,0.99 | Gyr: 0.46,0.19,0.20 | Mag: 0,0,0 | Alt: -126.60 m | Temp: 29.75 C | Flags: 0x2F
+[14:34:58.326] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.82,0.51,0.60 | Mag: 0,0,0 | Alt: -127.20 m | Temp: 29.75 C | Flags: 0x2F
+[14:34:58.485] Node: BBB9 | LOG: >>> AUTO PARACHUTE (Alt <= 200m). IGNITER ON! <<<
+[14:34:59.466] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.34,0.35,0.14 | Mag: 0,0,0 | Alt: -126.80 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:00.535] Node: BBB9 | Acc: 0.06,0.13,0.99 | Gyr: 0.59,0.13,0.43 | Mag: 0,0,0 | Alt: -127.20 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:01.685] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.57,-0.29,0.10 | Mag: 0,0,0 | Alt: -127.90 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:02.751] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.05,0.32,-0.81 | Mag: 0,0,0 | Alt: -126.50 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:03.521] Node: BBB9 | LOG: IGNITER OFF (5s timeout)
+[14:35:04.081] Node: BBB9 | Acc: 0.06,0.12,0.99 | Gyr: -0.83,0.58,-0.24 | Mag: 0,0,0 | Alt: -126.10 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:05.158] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.70,-0.05,-0.48 | Mag: 0,0,0 | Alt: -126.40 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:06.225] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -1.37,0.21,-0.07 | Mag: 0,0,0 | Alt: -126.90 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:07.255] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.27,0.75,0.07 | Mag: 0,0,0 | Alt: -126.30 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:08.413] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.78,0.38,-0.30 | Mag: 0,0,0 | Alt: -127.00 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:09.481] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.39,-0.12,0.05 | Mag: 0,0,0 | Alt: -126.70 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:10.628] Node: BBB9 | Acc: 0.04,0.12,0.99 | Gyr: -0.54,-0.30,0.33 | Mag: 0,0,0 | Alt: -126.20 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:11.697] Node: BBB9 | Acc: 0.05,0.13,0.99 | Gyr: -0.60,0.44,-0.30 | Mag: 0,0,0 | Alt: -126.90 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:12.842] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.00,-1.25,0.62 | Mag: 0,0,0 | Alt: -126.70 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:13.912] Node: BBB9 | Acc: 0.06,0.13,0.99 | Gyr: 0.12,-1.47,0.76 | Mag: 0,0,0 | Alt: -126.10 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:15.050] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.90,-0.20,-0.22 | Mag: 0,0,0 | Alt: -127.30 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:16.193] Node: BBB9 | Acc: 0.05,0.12,1.00 | Gyr: 0.41,-0.02,0.00 | Mag: 0,0,0 | Alt: -126.70 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:17.261] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.46,0.87,-0.17 | Mag: 0,0,0 | Alt: -127.20 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:18.412] Node: BBB9 | Acc: 0.05,0.13,0.99 | Gyr: -0.73,0.10,-0.91 | Mag: 0,0,0 | Alt: -126.50 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:19.477] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.59,0.58,0.42 | Mag: 0,0,0 | Alt: -125.70 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:20.697] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.32,-0.77,1.02 | Mag: 0,0,0 | Alt: -126.50 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:21.763] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.90,0.44,0.59 | Mag: 0,0,0 | Alt: -127.00 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:22.831] Node: BBB9 | Acc: 0.05,0.13,0.99 | Gyr: 0.00,0.10,-0.87 | Mag: 0,0,0 | Alt: -127.30 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:23.982] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.61,-0.38,-0.30 | Mag: 0,0,0 | Alt: -126.70 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:25.049] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.34,0.43,0.24 | Mag: 0,0,0 | Alt: -126.20 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:26.194] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.47,-0.55,0.53 | Mag: 0,0,0 | Alt: -126.70 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:27.267] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: -0.54,-0.34,-0.04 | Mag: 0,0,0 | Alt: -125.30 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:28.820] Node: BBB9 | Acc: 0.05,0.13,0.99 | Gyr: 1.03,-0.35,0.20 | Mag: 0,0,0 | Alt: -126.80 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:29.974] Node: BBB9 | Acc: 0.05,0.12,0.99 | Gyr: 0.70,-0.18,0.26 | Mag: 0,0,0 | Alt: -126.60 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:32.200] Node: BBB9 | Acc: 0.07,0.13,0.98 | Gyr: 3.44,-6.45,1.75 | Mag: 0,0,0 | Alt: -125.80 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:34.428] Node: BBB9 | Acc: 0.05,0.11,0.99 | Gyr: -0.13,-0.31,-1.57 | Mag: 0,0,0 | Alt: -124.90 m | Temp: 29.75 C | Flags: 0x4F
+[14:35:35.492] Node: BBB9 | Acc: 0.05,0.13,1.00 | Gyr: 0.45,0.96,0.67 | Mag: 0,0,0 | Alt: -125.70 m | Temp: 29.81 C | Flags: 0x4F
+[14:35:36.643] Node: BBB9 | Acc: 0.04,0.11,0.99 | Gyr: 0.17,-0.05,-0.32 | Mag: 0,0,0 | Alt: -125.30 m | Temp: 29.81 C | Flags: 0x4F
+[14:35:37.716] Node: BBB9 | Acc: 0.02,0.03,0.89 | Gyr: 0.44,6.59,-0.13 | Mag: 0,0,0 | Alt: -124.80 m | Temp: 29.81 C | Flags: 0x4F
+[14:35:38.791] Node: BBB9 | Acc: 0.07,0.06,1.03 | Gyr: 3.50,2.90,-9.73 | Mag: 0,0,0 | Alt: -124.00 m | Temp: 29.81 C | Flags: 0x4F
+[14:35:39.957] Node: BBB9 | Acc: 0.12,0.33,1.45 | Gyr: -15.83,-148.52,-22.58 | Mag: 0,0,0 | Alt: -126.20 m | Temp: 29.81 C | Flags: 0x4F
+[14:35:41.020] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.38,1.49,0.56 | Mag: 0,0,0 | Alt: -126.90 m | Temp: 29.81 C | Flags: 0x4F
+[14:35:50.624] >> PC Request: Sent SYS CMD 64
+[14:35:50.722] Node: BBB9 | LOG: Sent CMD 0x40 with Param 0
+[14:36:07.748] Node: BBB9 | LOG: LoRa Ready!
+[14:36:07.918] Node: BBB9 | LOG: PCA9685 is online!
+[14:36:08.235] Node: BBB9 | LOG: BMI088 OK. Calibrating...
+[14:36:12.065] Node: BBB9 | LOG: LIS3MDL OK
+[14:36:12.233] Node: BBB9 | LOG: BMP388 OK
+[14:36:13.031] Node: BBB9 | LOG:
+[14:36:13.061] [MAIN] SD карта готова.
+[14:36:13.470] Node: BBB9 | LOG: [MAIN] Config not found! Creating default...
+[14:36:15.150] Node: BBB9 | LOG: [MAIN] Файл data.csv открыт для записи.
+[14:36:15.320] Node: BBB9 | LOG: INIT DONE. Entering main loop...
+[14:36:16.578] Node: BBB9 | Acc: 0.03,0.12,0.99 | Gyr: 0.36,0.55,0.80 | Mag: 0,0,0 | Alt: -126.90 m | Temp: 29.93 C | Flags: 0xF
+[14:36:17.711] Node: BBB9 | Acc: 0.04,0.11,0.99 | Gyr: 0.49,-0.70,0.92 | Mag: 0,0,0 | Alt: -126.30 m | Temp: 29.93 C | Flags: 0xF
+[14:36:18.771] Node: BBB9 | Acc: 0.04,0.11,0.99 | Gyr: -0.44,-0.13,-0.80 | Mag: 0,0,0 | Alt: -127.60 m | Temp: 29.93 C | Flags: 0xF
+[14:36:19.909] Node: BBB9 | Acc: 0.03,0.12,1.00 | Gyr: -0.32,-1.26,-0.47 | Mag: 0,0,0 | Alt: -126.30 m | Temp: 29.93 C | Flags: 0xF
+[14:36:20.968] Node: BBB9 | Acc: 0.04,0.12,0.99 | Gyr: -0.29,0.62,0.82 | Mag: 0,0,0 | Alt: -126.80 m | Temp: 29.93 C | Flags: 0xF
+[14:36:22.030] Node: BBB9 | Acc: 0.03,0.11,1.00 | Gyr: -0.18,0.51,-0.86 | Mag: 0,0,0 | Alt: -126.10 m | Temp: 29.93 C | Flags: 0xF
+[14:36:23.160] Node: BBB9 | Acc: 0.03,0.11,0.99 | Gyr: 0.92,0.13,0.07 | Mag: 0,0,0 | Alt: -125.70 m | Temp: 29.93 C | Flags: 0xF
+[14:36:24.223] Node: BBB9 | Acc: 0.05,0.11,1.00 | Gyr: -0.60,-0.86,-0.74 | Mag: 0,0,0 | Alt: -126.60 m | Temp: 29.93 C | Flags: 0xF
+[14:36:25.356] Node: BBB9 | Acc: 0.04,0.11,0.99 | Gyr: 0.35,-0.67,0.62 | Mag: 0,0,0 | Alt: -126.80 m | Temp: 29.93 C | Flags: 0xF
+[14:36:26.414] Node: BBB9 | Acc: 0.04,0.10,1.00 | Gyr: -0.46,-0.21,0.28 | Mag: 0,0,0 | Alt: -127.30 m | Temp: 29.93 C | Flags: 0xF
+[14:37:24.494] Node: BBB9 | LOG: LoRa Ready!
+[14:37:24.663] Node: BBB9 | LOG: PCA9685 is online!
+[14:37:24.980] Node: BBB9 | LOG: BMI088 OK. Calibrating...
+[14:37:28.812] Node: BBB9 | LOG: LIS3MDL OK
+[14:37:28.980] Node: BBB9 | LOG: BMP388 OK
+[14:37:29.778] Node: BBB9 | LOG:
+[14:37:29.808] [MAIN] SD карта готова.
+[14:37:30.218] Node: BBB9 | LOG: [MAIN] Config not found! Creating default...
+[14:37:31.897] Node: BBB9 | LOG: [MAIN] Файл data.csv открыт для записи.
+[14:37:33.328] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: 0.61,0.14,0.46 | Mag: 0,0,0 | Alt: -128.90 m | Temp: 29.93 C | Flags: 0xF
+[14:37:34.468] Node: BBB9 | Acc: 0.06,0.11,0.99 | Gyr: -0.10,-0.19,-0.22 | Mag: 0,0,0 | Alt: -128.50 m | Temp: 29.93 C | Flags: 0xF
+[14:37:35.527] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: -0.62,-1.25,-0.12 | Mag: 0,0,0 | Alt: -129.10 m | Temp: 29.93 C | Flags: 0xF
+[14:37:36.667] Node: BBB9 | Acc: 0.05,0.10,1.00 | Gyr: -0.37,-0.55,-0.31 | Mag: 0,0,0 | Alt: -128.10 m | Temp: 29.93 C | Flags: 0xF
+[14:37:37.727] Node: BBB9 | Acc: 0.06,0.10,1.00 | Gyr: 0.10,-0.30,-0.11 | Mag: 0,0,0 | Alt: -128.50 m | Temp: 29.93 C | Flags: 0xF
+[14:37:38.783] Node: BBB9 | Acc: 0.06,0.10,0.99 | Gyr: -0.67,-0.14,0.19 | Mag: 0,0,0 | Alt: -128.30 m | Temp: 29.93 C | Flags: 0xF
+[14:37:39.812] Node: BBB9 | Acc: 0.06,0.11,0.99 | Gyr: -0.78,-0.80,0.64 | Mag: 0,0,0 | Alt: -128.40 m | Temp: 29.93 C | Flags: 0xF
+[14:37:40.958] Node: BBB9 | Acc: 0.06,0.10,0.99 | Gyr: -0.45,0.26,1.66 | Mag: 0,0,0 | Alt: -128.80 m | Temp: 29.93 C | Flags: 0xF
+[14:37:42.015] Node: BBB9 | Acc: 0.05,0.10,0.99 | Gyr: 0.77,-0.41,0.47 | Mag: 0,0,0 | Alt: -128.80 m | Temp: 29.93 C | Flags: 0xF
+[14:37:43.155] Node: BBB9 | Acc: 0.06,0.11,0.99 | Gyr: -0.41,-0.09,-0.47 | Mag: 0,0,0 | Alt: -128.10 m | Temp: 29.93 C | Flags: 0xF
+[14:37:44.214] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: -0.01,-1.64,-0.22 | Mag: 0,0,0 | Alt: -128.30 m | Temp: 29.93 C | Flags: 0xF
+[14:37:45.354] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: -0.74,0.47,0.61 | Mag: 0,0,0 | Alt: -128.60 m | Temp: 29.93 C | Flags: 0xF
+[14:37:46.410] Node: BBB9 | Acc: 0.06,0.11,0.99 | Gyr: -0.04,0.67,0.05 | Mag: 0,0,0 | Alt: -128.50 m | Temp: 29.93 C | Flags: 0xF
+[14:37:47.544] Node: BBB9 | Acc: 0.06,0.11,0.99 | Gyr: -0.04,-1.29,0.49 | Mag: 0,0,0 | Alt: -128.50 m | Temp: 29.93 C | Flags: 0xF
+[14:37:48.607] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: -0.70,-0.16,0.61 | Mag: 0,0,0 | Alt: -128.80 m | Temp: 29.93 C | Flags: 0xF
+[14:37:49.669] Node: BBB9 | Acc: 0.06,0.10,0.99 | Gyr: 0.29,-0.40,-1.02 | Mag: 0,0,0 | Alt: -128.10 m | Temp: 29.93 C | Flags: 0xF
+[14:37:50.801] Node: BBB9 | Acc: 0.05,0.10,0.99 | Gyr: 0.14,0.72,0.26 | Mag: 0,0,0 | Alt: -128.50 m | Temp: 29.93 C | Flags: 0xF
+[14:37:51.861] Node: BBB9 | Acc: 0.05,0.11,0.99 | Gyr: 0.38,-0.51,-0.45 | Mag: 0,0,0 | Alt: -129.20 m | Temp: 29.93 C | Flags: 0xF
+[14:37:52.997] Node: BBB9 | Acc: 0.06,0.10,0.99 | Gyr: 0.61,-0.36,-0.79 | Mag: 0,0,0 | Alt: -127.50 m | Temp: 29.93 C | Flags: 0xF
+[14:37:54.055] Node: BBB9 | Acc: 0.05,0.11,0.99 | Gyr: -0.08,-0.89,0.18 | Mag: 0,0,0 | Alt: -128.80 m | Temp: 29.93 C | Flags: 0xF
+[14:37:55.192] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: 0.00,-0.51,-0.30 | Mag: 0,0,0 | Alt: -128.80 m | Temp: 29.93 C | Flags: 0xF
+[14:37:56.251] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: -0.41,-0.67,-0.54 | Mag: 0,0,0 | Alt: -129.20 m | Temp: 29.93 C | Flags: 0xF
+[14:37:57.311] Node: BBB9 | Acc: 0.06,0.10,0.99 | Gyr: -1.14,-0.16,-0.45 | Mag: 0,0,0 | Alt: -128.70 m | Temp: 29.93 C | Flags: 0xF
+[14:37:58.343] Node: BBB9 | Acc: 0.05,0.11,0.99 | Gyr: -0.15,-0.04,0.97 | Mag: 0,0,0 | Alt: -128.70 m | Temp: 29.93 C | Flags: 0xF
+[14:37:59.397] Node: BBB9 | Acc: 0.05,0.11,0.99 | Gyr: 0.51,0.44,0.28 | Mag: 0,0,0 | Alt: -129.30 m | Temp: 29.93 C | Flags: 0xF
+[14:38:00.943] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: -0.69,0.12,-1.14 | Mag: 0,0,0 | Alt: -128.10 m | Temp: 29.93 C | Flags: 0xF
+[14:38:02.086] Node: BBB9 | Acc: 0.06,0.11,0.99 | Gyr: -0.50,-0.09,0.04 | Mag: 0,0,0 | Alt: -128.30 m | Temp: 29.93 C | Flags: 0xF
+[14:38:03.142] Node: BBB9 | Acc: 0.06,0.11,0.99 | Gyr: -0.70,-0.09,-0.42 | Mag: 0,0,0 | Alt: -128.70 m | Temp: 29.93 C | Flags: 0xF
+[14:38:04.274] Node: BBB9 | Acc: 0.05,0.11,1.00 | Gyr: -0.85,0.29,0.00 | Mag: 0,0,0 | Alt: -129.30 m | Temp: 29.93 C | Flags: 0xF
+[14:38:05.338] Node: BBB9 | Acc: 0.06,0.11,0.99 | Gyr: 0.61,-0.26,0.62 | Mag: 0,0,0 | Alt: -128.70 m | Temp: 29.93 C | Flags: 0xF
+[14:38:06.476] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: -0.54,-0.38,-0.11 | Mag: 0,0,0 | Alt: -128.50 m | Temp: 29.93 C | Flags: 0xF
+[14:38:07.535] Node: BBB9 | Acc: 0.06,0.11,1.00 | Gyr: -0.57,0.03,-0.91 | Mag: 0,0,0 | Alt: -127.70 m | Temp: 29.93 C | Flags: 0xF
+[14:38:08.674] Node: BBB9 | Acc: 0.07,0.10,0.97 | Gyr: -0.80,-2.70,2.48 | Mag: 0,0,0 | Alt: -128.10 m | Temp: 29.93 C | Flags: 0xF
+[14:38:33.488] Node: BBB9 | LOG: LoRa Ready!
+[14:38:33.658] Node: BBB9 | LOG: PCA9685 is online!
+[14:38:52.509] Node: BBB9 | LOG: LoRa Ready!
+[14:38:52.679] Node: BBB9 | LOG: PCA9685 is online!
+[14:38:52.996] Node: BBB9 | LOG: BMI088 OK. Calibrating...
+[14:38:56.824] Node: BBB9 | LOG: LIS3MDL OK
+[14:38:56.992] Node: BBB9 | LOG: BMP388 OK
+[14:38:57.789] Node: BBB9 | LOG:
+[14:38:57.819] [MAIN] SD карта готова.
+[14:38:58.228] Node: BBB9 | LOG: [MAIN] Config not found! Creating default...
+[14:39:26.399] Node: BBB9 | LOG: LoRa Ready!
+[14:39:26.568] Node: BBB9 | LOG: PCA9685 is online!
+[14:39:26.885] Node: BBB9 | LOG: BMI088 OK. Calibrating...
+[14:39:30.712] Node: BBB9 | LOG: LIS3MDL OK
+[14:39:30.880] Node: BBB9 | LOG: BMP388 OK
+[14:39:31.677] Node: BBB9 | LOG:
+[14:39:31.707] [MAIN] SD карта готова.
+[14:39:32.117] Node: BBB9 | LOG: [MAIN] Config not found! Creating default...
+[14:39:33.796] Node: BBB9 | LOG: [MAIN] Файл data.csv открыт для записи.
+[14:39:35.134] Node: BBB9 | Acc: 0.03,0.09,1.00 | Gyr: -0.90,-0.54,-0.56 | Mag: 0,0,0 | Alt: -127.90 m | Temp: 32.03 C | Flags: 0x7
+[14:39:36.190] Node: BBB9 | Acc: 0.04,0.10,1.00 | Gyr: -0.38,0.50,0.01 | Mag: 0,0,0 | Alt: -127.80 m | Temp: 30.12 C | Flags: 0xF
+[14:39:36.291] Node: BBB9 | LOG: >>> DROP DETECTED (2s delay)! <<<
+[14:39:37.278] Node: BBB9 | Acc: 0.05,0.10,0.99 | Gyr: 0.09,0.31,1.23 | Mag: 0,0,0 | Alt: -128.40 m | Temp: 30.12 C | Flags: 0x1F
+[14:39:38.418] Node: BBB9 | Acc: 0.03,0.10,1.00 | Gyr: 0.49,0.16,0.12 | Mag: 0,0,0 | Alt: -128.20 m | Temp: 30.12 C | Flags: 0x1F
+[14:39:38.514] Node: BBB9 | LOG: >>> 2s DELAY OVER. PULL UP! <<<
+[14:39:39.516] Node: BBB9 | Acc: 0.04,0.09,0.99 | Gyr: -1.21,-0.22,-0.10 | Mag: 0,0,0 | Alt: -128.00 m | Temp: 30.12 C | Flags: 0x2F
+[14:39:40.654] Node: BBB9 | Acc: 0.04,0.09,1.00 | Gyr: 0.97,1.27,0.36 | Mag: 0,0,0 | Alt: -128.20 m | Temp: 30.18 C | Flags: 0x2F
+[14:39:41.576] Node: BBB9 | LOG: >>> AUTO PARACHUTE (Alt <= 200m). IGNITER ON! <<<
+[14:39:42.038] Node: BBB9 | Acc: 0.03,0.10,1.00 | Gyr: -0.25,-1.22,0.29 | Mag: 0,0,0 | Alt: -127.30 m | Temp: 30.12 C | Flags: 0x2F
+[14:39:43.174] Node: BBB9 | Acc: 0.04,0.09,1.00 | Gyr: -0.58,-0.44,0.78 | Mag: 0,0,0 | Alt: -127.50 m | Temp: 30.12 C | Flags: 0x4F
+[14:39:44.203] Node: BBB9 | Acc: 0.04,0.10,1.00 | Gyr: 0.52,0.23,0.42 | Mag: 0,0,0 | Alt: -127.90 m | Temp: 30.18 C | Flags: 0x4F
+[14:39:45.359] Node: BBB9 | Acc: 0.03,0.09,1.00 | Gyr: 0.41,0.22,0.44 | Mag: 0,0,0 | Alt: -126.80 m | Temp: 30.18 C | Flags: 0x4F
+[14:39:46.429] Node: BBB9 | Acc: 0.04,0.10,1.00 | Gyr: 0.69,-0.82,0.45 | Mag: 0,0,0 | Alt: -128.60 m | Temp: 30.18 C | Flags: 0x4F
+[14:39:46.503] Node: BBB9 | LOG: IGNITER OFF (5s timeout)
+[14:39:47.588] Node: BBB9 | Acc: 0.04,0.09,1.00 | Gyr: -0.48,-0.17,-0.95 | Mag: 0,0,0 | Alt: -127.80 m | Temp: 30.18 C | Flags: 0x4F
+[14:39:48.654] Node: BBB9 | Acc: 0.04,0.10,1.00 | Gyr: 0.49,0.08,-0.64 | Mag: 0,0,0 | Alt: -128.60 m | Temp: 30.18 C | Flags: 0x4F
+[14:39:49.804] Node: BBB9 | Acc: 0.03,0.10,0.99 | Gyr: -0.63,-0.24,-0.97 | Mag: 0,0,0 | Alt: -128.50 m | Temp: 30.18 C | Flags: 0x4F
+[14:39:50.876] Node: BBB9 | Acc: 0.03,0.10,1.00 | Gyr: 0.28,-0.01,-0.18 | Mag: 0,0,0 | Alt: -128.50 m | Temp: 30.18 C | Flags: 0x4F
