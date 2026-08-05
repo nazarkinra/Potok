@@ -38,6 +38,9 @@
 #include "sd_mcp23017.h"
 #include "pca9685.h"
 #include "servo_control.h"
+#include "motor_control.h"
+#include "MadgwickAHRS.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -106,8 +109,23 @@ Servo_HandleTypeDef myServo1;
 Servo_HandleTypeDef myServo2;
 
 volatile bool lora_irq_triggered = false;
+Motor_HandleTypeDef motorE;
 // Базовое давление на земле для планера (по умолчанию стандартное 1013.25 гПа)
 float ground_pressure = 1013.25f;
+
+typedef enum { STATE_WAIT, STATE_FLIGHT, STATE_EMERGENCY } State_t;
+State_t current_state = STATE_WAIT;
+
+float target_roll = 0, target_pitch = -5.0f, target_yaw = 0;
+float prev_err_roll = 0, prev_err_pitch = 0, prev_err_yaw = 0;
+float integral_roll = 0, integral_pitch = 0, integral_yaw = 0;
+
+// PID constants (dummy values, need tuning)
+float kp_r = 1.0f, ki_r = 0.01f, kd_r = 0.5f;
+float kp_p = 1.0f, ki_p = 0.01f, kd_p = 0.5f;
+float kp_y = 1.0f, ki_y = 0.01f, kd_y = 0.5f;
+
+float roll = 0, pitch = 0, yaw = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -201,6 +219,7 @@ int main(void)
 
       // Инициализация PCA9685 на 50 Гц для сервомоторов
       PCA9685_Init(50);
+      Motor_Init(&motorE, 13, 14);
 
       // Инициализируем LoRa ПЕРВЫМ из датчиков, чтобы отправлять статусы остальных
       LoRa_Init();
@@ -275,6 +294,7 @@ int main(void)
     uint32_t last_poll_tick = HAL_GetTick();
     uint32_t last_sd_tick   = HAL_GetTick();
     uint32_t last_tx_tick   = HAL_GetTick();
+    uint32_t last_pid_tick  = HAL_GetTick();
 
     uint32_t ds18b20_timer = 0;
     uint8_t ds18b20_state = 0;
@@ -295,94 +315,158 @@ int main(void)
 
           while (1)
           {
-        	  // --- ПРЯМОЙ ОПРОС РЕГИСТРОВ SX1278 ---
-        	  uint8_t irqFlags = LoRa_ReadReg(0x12);
+              if (HAL_GetTick() - last_pid_tick >= 10) {
+                  last_pid_tick = HAL_GetTick();
 
-        	  if (irqFlags & 0x40) { // RX_DONE
-        	      LoRa_WriteReg(0x12, irqFlags); // Сбрасываем флаги прерываний
+                  // Separation simulation
+                  int adc_sim = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) == GPIO_PIN_SET ? 1 : 0;
+                  if (current_state == STATE_WAIT && adc_sim == 1) {
+                      current_state = STATE_FLIGHT;
+                      Send_Log(">>> SEPARATION DETECTED! SWITCHING TO FLIGHT MODE <<<");
+                  }
 
-        	      if ((irqFlags & 0x20) == 0) { // Нет аппаратной ошибки CRC
-        	          int pSize = LoRa_ReadReg(0x13);
+                  if (current_state == STATE_FLIGHT) {
+                      float dt = 0.01f;
 
-        	          // 1. СТРОГАЯ ПРОВЕРКА РАЗМЕРА: пакет команды должен весить РОВНО 6 байт
-        	          if (pSize == sizeof(CommandPacket_t)) {
-        	              LoRa_WriteReg(0x0D, LoRa_ReadReg(0x10)); // Ставим указатель на начало пакета
+                      float accel_x = current_pkt.accel_x / 100.0f;
+                      float accel_y = current_pkt.accel_y / 100.0f;
+                      float accel_z = current_pkt.accel_z / 100.0f;
+                      float gyro_x = current_pkt.gyro_x / 100.0f;
+                      float gyro_y = current_pkt.gyro_y / 100.0f;
+                      float gyro_z = current_pkt.gyro_z / 100.0f;
 
-        	              CommandPacket_t rx_cmd;
-        	              uint8_t *ptr = (uint8_t*)&rx_cmd;
+                      MadgwickAHRSupdateIMU(gyro_x, gyro_y, gyro_z, accel_x, accel_y, accel_z);
 
-        	              // Вычитываем байты из буфера
-        	              for (int i = 0; i < sizeof(CommandPacket_t); i++) {
-        	                  ptr[i] = LoRa_ReadReg(0x00);
-        	              }
+                      // Calculate angles from quaternions
+                      roll  = atan2f(q0*q1 + q2*q3, 0.5f - q1*q1 - q2*q2) * 57.29578f;
+                      pitch = asinf(-2.0f * (q1*q3 - q0*q2)) * 57.29578f;
+                      yaw   = atan2f(q1*q2 + q0*q3, 0.5f - q2*q2 - q3*q3) * 57.29578f;
 
-        	              if (rx_cmd.target_id == MY_NODE_ID) {
-        	                  // 2. ПРОВЕРКА КОНТРОЛЬНОЙ СУММЫ (отсекает случайный мусор и обрывки телеметрии)
-        	                  uint8_t calc_crc = 0;
-        	                  for (int i = 0; i < sizeof(CommandPacket_t) - 1; i++) {
-        	                      calc_crc ^= ptr[i];
-        	                  }
+                      // Roll PID
+                      float err_r = target_roll - roll;
+                      integral_roll += err_r * dt;
+                      float deriv_r = (err_r - prev_err_roll) / dt;
+                      float out_r = (kp_r * err_r) + (ki_r * integral_roll) + (kd_r * deriv_r);
+                      prev_err_roll = err_r;
 
-        	                  if (calc_crc == rx_cmd.checksum) {
-        	                      char cmd_log[64];
-        	                      snprintf(cmd_log, sizeof(cmd_log), "RX CMD | ID: 0x%02X, Param: %d", rx_cmd.cmd_id, rx_cmd.param);
-        	                      Send_Log(cmd_log);
+                      // Pitch PID
+                      float err_p = target_pitch - pitch;
+                      integral_pitch += err_p * dt;
+                      float deriv_p = (err_p - prev_err_pitch) / dt;
+                      float out_p = (kp_p * err_p) + (ki_p * integral_pitch) + (kd_p * deriv_p);
+                      prev_err_pitch = err_p;
 
-        	                      // Управление сервоприводами
-        	                      // Управление сервоприводами и системные команды
-        	                      switch (rx_cmd.cmd_id) {
-        	                          case 0x10:
-        	                              Servo_SetAngle(&myServo1, rx_cmd.param);
-        	                              Send_Log("Action: Servo 1 OK");
-        	                              break;
-        	                          case 0x11:
-        	                              Servo_SetAngle(&myServo2, rx_cmd.param);
-        	                              Send_Log("Action: Servo 2 OK");
-        	                              break;
+                      // Yaw PID
+                      float err_y = target_yaw - yaw;
+                      integral_yaw += err_y * dt;
+                      float deriv_y = (err_y - prev_err_yaw) / dt;
+                      float out_y = (kp_y * err_y) + (ki_y * integral_yaw) + (kd_y * deriv_y);
+                      prev_err_yaw = err_y;
 
-        	                          // --- ПЕРЕЗАПУСК ДАТЧИКОВ ---
-        	                          case 0x20: // BMI088
-        	                              Send_Log("Re-init: BMI088...");
-        	                              if (BMI088_Init(&hspi1) == HAL_OK) {
-        	                                  BMI088_CalibrateGyro(&hspi1, 200);
-        	                                  bmi_ok = true;
-        	                                  Send_Log("Re-init: BMI088 OK");
-        	                              } else {
-        	                                  bmi_ok = false;
-        	                                  Send_Log("Re-init: BMI088 FAILED!");
-        	                              }
-        	                              break;
+                      // Map to motors (Assuming elevons on myServo1/2 and rudder on motorE)
+                      int left_elevon = (int)(out_p + out_r);
+                      int right_elevon = (int)(out_p - out_r);
+                      int rudder = (int)out_y;
 
-        	                          case 0x21: // LIS3MDL
-        	                              Send_Log("Re-init: LIS3MDL...");
-        	                              if (LIS3MDL_Init() == 1) {
-        	                                  lis_ok = true;
-        	                                  Send_Log("Re-init: LIS3MDL OK");
-        	                              } else {
-        	                                  lis_ok = false;
-        	                                  Send_Log("Re-init: LIS3MDL FAILED!");
-        	                              }
-        	                              break;
+                      // Servo max angle handling or limiting if needed. The angles are in degrees for servo, usually 0-180.
+                      // We should map them so that 0 output corresponds to 90 degrees.
+                      Servo_SetAngle(&myServo1, 90 + left_elevon);
+                      Servo_SetAngle(&myServo2, 90 + right_elevon);
+                      Motor_SetSpeed(&motorE, rudder);
+                  } else if (current_state == STATE_EMERGENCY) {
+                      Motor_SetSpeed(&motorE, 0);
+                      Servo_SetAngle(&myServo1, 90); // or neutral position
+                      Servo_SetAngle(&myServo2, 90); // or neutral position
+                  }
+              }
+		  // --- ПРЯМОЙ ОПРОС РЕГИСТРОВ SX1278 ---
+		  uint8_t irqFlags = LoRa_ReadReg(0x12);
 
-        	                          case 0x22: // BMP388
-        	                              Send_Log("Re-init: BMP388...");
-        	                              if (BMP388_Init() == BMP388_OK) {
-        	                                  bmp_ok = true;
-        	                                  Send_Log("Re-init: BMP388 OK");
-        	                              } else {
-        	                                  bmp_ok = false;
-        	                                  Send_Log("Re-init: BMP388 FAILED!");
-        	                              }
-        	                              break;
+		  if (irqFlags & 0x40) { // RX_DONE
+		      LoRa_WriteReg(0x12, irqFlags); // Сбрасываем флаги прерываний
 
-        	                          case 0x23: // SD Card
-        	                              Send_Log("Re-init: SD Card...");
-        	                              if (SD_MCP_Init(&hspi2) == 0 && SD_MCP_OpenFile("0:/data.csv") == 0) {
-        	                                  Send_Log("Re-init: SD Card OK");
-        	                              } else {
-        	                                  Send_Log("Re-init: SD Card FAILED!");
-        	                              }
-        	                              break;
+		      if ((irqFlags & 0x20) == 0) { // Нет аппаратной ошибки CRC
+		          int pSize = LoRa_ReadReg(0x13);
+
+		          // 1. СТРОГАЯ ПРОВЕРКА РАЗМЕРА: пакет команды должен весить РОВНО 6 байт
+		          if (pSize == sizeof(CommandPacket_t)) {
+		              LoRa_WriteReg(0x0D, LoRa_ReadReg(0x10)); // Ставим указатель на начало пакета
+
+		              CommandPacket_t rx_cmd;
+		              uint8_t *ptr = (uint8_t*)&rx_cmd;
+
+		              // Вычитываем байты из буфера
+		              for (int i = 0; i < sizeof(CommandPacket_t); i++) {
+		                  ptr[i] = LoRa_ReadReg(0x00);
+		              }
+
+		              if (rx_cmd.target_id == MY_NODE_ID) {
+		                  // 2. ПРОВЕРКА КОНТРОЛЬНОЙ СУММЫ (отсекает случайный мусор и обрывки телеметрии)
+		                  uint8_t calc_crc = 0;
+		                  for (int i = 0; i < sizeof(CommandPacket_t) - 1; i++) {
+		                      calc_crc ^= ptr[i];
+		                  }
+
+		                  if (calc_crc == rx_cmd.checksum) {
+		                      char cmd_log[64];
+		                      snprintf(cmd_log, sizeof(cmd_log), "RX CMD | ID: 0x%02X, Param: %d", rx_cmd.cmd_id, rx_cmd.param);
+		                      Send_Log(cmd_log);
+
+		                      // Управление сервоприводами
+		                      // Управление сервоприводами и системные команды
+		                      switch (rx_cmd.cmd_id) {
+		                          case 0x10:
+		                              Servo_SetAngle(&myServo1, rx_cmd.param);
+		                              Send_Log("Action: Servo 1 OK");
+		                              break;
+		                          case 0x11:
+		                              Servo_SetAngle(&myServo2, rx_cmd.param);
+		                              Send_Log("Action: Servo 2 OK");
+		                              break;
+
+		                          // --- ПЕРЕЗАПУСК ДАТЧИКОВ ---
+		                          case 0x20: // BMI088
+		                              Send_Log("Re-init: BMI088...");
+		                              if (BMI088_Init(&hspi1) == HAL_OK) {
+		                                  BMI088_CalibrateGyro(&hspi1, 200);
+		                                  bmi_ok = true;
+		                                  Send_Log("Re-init: BMI088 OK");
+		                              } else {
+		                                  bmi_ok = false;
+		                                  Send_Log("Re-init: BMI088 FAILED!");
+		                              }
+		                              break;
+
+		                          case 0x21: // LIS3MDL
+		                              Send_Log("Re-init: LIS3MDL...");
+		                              if (LIS3MDL_Init() == 1) {
+		                                  lis_ok = true;
+		                                  Send_Log("Re-init: LIS3MDL OK");
+		                              } else {
+		                                  lis_ok = false;
+		                                  Send_Log("Re-init: LIS3MDL FAILED!");
+		                              }
+		                              break;
+
+		                          case 0x22: // BMP388
+		                              Send_Log("Re-init: BMP388...");
+		                              if (BMP388_Init() == BMP388_OK) {
+		                                  bmp_ok = true;
+		                                  Send_Log("Re-init: BMP388 OK");
+		                              } else {
+		                                  bmp_ok = false;
+		                                  Send_Log("Re-init: BMP388 FAILED!");
+		                              }
+		                              break;
+
+		                          case 0x23: // SD Card
+		                              Send_Log("Re-init: SD Card...");
+		                              if (SD_MCP_Init(&hspi2) == 0 && SD_MCP_OpenFile("0:/data.csv") == 0) {
+		                                  Send_Log("Re-init: SD Card OK");
+		                              } else {
+		                                  Send_Log("Re-init: SD Card FAILED!");
+		                              }
+		                              break;
 
 									  // --- КАЛИБРОВКА ДАТЧИКОВ ---
 									  case 0x30: // BMI088 (Гироскоп)
@@ -437,12 +521,12 @@ int main(void)
 											  Send_Log(unk_log);
 										  }
 										  break;
-        	                      }
-        	                  }
-        	              }
-        	          }
-        	      }
-        	  }
+		                      }
+		                  }
+		              }
+		          }
+		      }
+		  }
 
               // --- 2. Неблокирующий опрос DS18B20 ---
               if (ds18b20_state == 0) {
@@ -496,7 +580,7 @@ int main(void)
                   if (bmp_ok) {
                       float bmp_temp, bmp_press;
                       if (BMP388_Read(&bmp_temp, &bmp_press) == BMP388_OK) {
-                    	  // Считаем высоту относительно стартовой точки (ground_pressure мы добавили ранее)
+			  // Считаем высоту относительно стартовой точки (ground_pressure мы добавили ранее)
 						  float rel_alt = BMP388_Altitude(ground_pressure, bmp_press);
 
 						  // Умножаем на 10, чтобы передать десятые доли метра в целом числе (например, 15.2 м -> 152)
