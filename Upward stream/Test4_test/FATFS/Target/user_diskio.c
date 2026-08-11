@@ -7,19 +7,6 @@
   */
  /* USER CODE END Header */
 
-#ifdef USE_OBSOLETE_USER_CODE_SECTION_0
-/*
- * Warning: the user section 0 is no more in use (starting from CubeMx version 4.16.0)
- * To be suppressed in the future.
- * Kept to ensure backward compatibility with previous CubeMx versions when
- * migrating projects.
- * User code previously added there should be copied in the new user sections before
- * the section contents can be deleted.
- */
-/* USER CODE BEGIN 0 */
-/* USER CODE END 0 */
-#endif
-
 /* USER CODE BEGIN DECL */
 #include <string.h>
 #include "ff_gen_drv.h"
@@ -119,14 +106,7 @@ Diskio_drvTypeDef  USER_Driver =
 
 /* Private functions ---------------------------------------------------------*/
 
-/**
-  * @brief  Initializes a Drive
-  * @param  pdrv: Physical drive number (0..)
-  * @retval DSTATUS: Operation status
-  */
-DSTATUS USER_initialize (
-	BYTE pdrv           /* Physical drive nmuber to identify the drive */
-)
+DSTATUS USER_initialize (BYTE pdrv)
 {
   /* USER CODE BEGIN INIT */
     uint8_t n, cmd, ty, ocr[4];
@@ -196,14 +176,7 @@ DSTATUS USER_initialize (
   /* USER CODE END INIT */
 }
 
-/**
-  * @brief  Gets Disk Status
-  * @param  pdrv: Physical drive number (0..)
-  * @retval DSTATUS: Operation status
-  */
-DSTATUS USER_status (
-	BYTE pdrv       /* Physical drive number to identify the drive */
-)
+DSTATUS USER_status (BYTE pdrv)
 {
   /* USER CODE BEGIN STATUS */
     if (pdrv != 0) return STA_NOINIT;
@@ -211,24 +184,17 @@ DSTATUS USER_status (
   /* USER CODE END STATUS */
 }
 
-/**
-  * @brief  Reads Sector(s)
-  */
-DRESULT USER_read (
-	BYTE pdrv,      /* Physical drive nmuber to identify the drive */
-	BYTE *buff,     /* Data buffer to store read data */
-	DWORD sector,   /* Sector address in LBA */
-	UINT count      /* Number of sectors to read */
-)
+DRESULT USER_read (BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 {
+  /* USER CODE BEGIN READ */
     if (pdrv != 0 || Stat & STA_NOINIT) return RES_NOTRDY;
 
     DRESULT res = RES_ERROR;
     SD_CS_LOW();
 
     if (count == 1) {
-        // УМНОЖАЕМ НА 512 ТОЛЬКО ЗДЕСЬ, ПРЯМО ПЕРЕД ОТПРАВКОЙ!
-        DWORD addr = (CardType != 2) ? sector * 512 : sector;
+        // Преобразуем адрес ТОЛЬКО перед отправкой
+        DWORD addr = (CardType == 2) ? sector : (sector * 512);
 
         if (SD_SendCmd(17, addr) == 0) { // CMD17
             uint32_t tickstart = HAL_GetTick();
@@ -239,13 +205,13 @@ DRESULT USER_read (
                 }
             }
             for (uint16_t i = 0; i < 512; i++) buff[i] = SPI_RxByte();
-            SPI_RxByte(); SPI_RxByte(); // Пропуск CRC
+            SPI_RxByte(); SPI_RxByte();
             res = RES_OK;
         }
     } else {
         res = RES_OK;
         for(UINT i = 0; i < count; i++) {
-            // ПРОСТО ПЕРЕДАЕМ (sector + i), рекурсия сама умножит на 512 внутри!
+            // Передаем СЫРОЙ номер сектора, умножение произойдет внутри
             if(USER_read(pdrv, buff, sector + i, 1) != RES_OK) {
                 res = RES_ERROR;
                 break;
@@ -258,29 +224,23 @@ DRESULT USER_read (
     SD_CS_HIGH();
     SPI_RxByte();
     return res;
+  /* USER CODE END READ */
 }
 
-/**
-  * @brief  Writes Sector(s)
-  */
 #if _USE_WRITE == 1
-DRESULT USER_write (
-	BYTE pdrv,          /* Physical drive nmuber to identify the drive */
-	const BYTE *buff,   /* Data to be written */
-	DWORD sector,       /* Sector address in LBA */
-	UINT count          /* Number of sectors to write */
-)
+DRESULT USER_write (BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
 {
+  /* USER CODE BEGIN WRITE */
     if (pdrv != 0 || Stat & STA_NOINIT) return RES_NOTRDY;
 
     DRESULT res = RES_ERROR;
     SD_CS_LOW();
 
     if (count == 1) {
-        // УМНОЖАЕМ НА 512 ТОЛЬКО ЗДЕСЬ!
-        DWORD addr = (CardType != 2) ? sector * 512 : sector;
+        // Преобразуем адрес ТОЛЬКО перед отправкой
+        DWORD addr = (CardType == 2) ? sector : (sector * 512);
 
-        if (SD_SendCmd(24, addr) == 0) {
+        if (SD_SendCmd(24, addr) == 0) { // CMD24
             SPI_TxByte(0xFF);
             SPI_TxByte(0xFE);
 
@@ -305,7 +265,7 @@ DRESULT USER_write (
     } else {
          res = RES_OK;
          for(UINT i = 0; i < count; i++) {
-            // ПРОСТО ПЕРЕДАЕМ (sector + i)
+            // Передаем СЫРОЙ номер сектора, умножение произойдет внутри
             if(USER_write(pdrv, buff, sector + i, 1) != RES_OK) {
                 res = RES_ERROR;
                 break;
@@ -317,24 +277,13 @@ DRESULT USER_write (
 
     SD_CS_HIGH();
     SPI_RxByte();
-
     return res;
+  /* USER CODE END WRITE */
 }
 #endif /* _USE_WRITE == 1 */
 
-/**
-  * @brief  I/O control operation
-  * @param  pdrv: Physical drive number (0..)
-  * @param  cmd: Control code
-  * @param  *buff: Buffer to send/receive control data
-  * @retval DRESULT: Operation result
-  */
 #if _USE_IOCTL == 1
-DRESULT USER_ioctl (
-	BYTE pdrv,      /* Physical drive nmuber (0..) */
-	BYTE cmd,       /* Control code */
-	void *buff      /* Buffer to send/receive control data */
-)
+DRESULT USER_ioctl (BYTE pdrv, BYTE cmd, void *buff)
 {
   /* USER CODE BEGIN IOCTL */
     DRESULT res = RES_ERROR;
@@ -387,4 +336,3 @@ DRESULT USER_ioctl (
   /* USER CODE END IOCTL */
 }
 #endif /* _USE_IOCTL == 1 */
-

@@ -179,3 +179,16 @@ void BMI088_ToPhysical(const BMI088_Raw_t *raw, BMI088_Physical_t *phys) {
 
     phys->Temp_C = (raw->Temp_Raw * 0.125f) + 23.0f;
 }
+
+// Новые функции для управления смещениями гироскопа
+void BMI088_SetGyroCalibration(float ox, float oy, float oz) {
+    gyro_offset_x = ox;
+    gyro_offset_y = oy;
+    gyro_offset_z = oz;
+}
+
+void BMI088_GetGyroCalibration(float *ox, float *oy, float *oz) {
+    *ox = gyro_offset_x;
+    *oy = gyro_offset_y;
+    *oz = gyro_offset_z;
+}

@@ -26,7 +26,8 @@ uint8_t SD_MCP_Init(SPI_HandleTypeDef *hspi) {
         Serial_PrintString(DEBUG_UART, "[SD] Форматирование в FAT32...\r\n");
 
         static BYTE work_buf[512];
-        res = f_mkfs(USERPath, 0x02, 0, work_buf, sizeof(work_buf));
+        Serial_PrintString(DEBUG_UART, "[SD] Форматирование в Auto-FAT...\r\n");
+		res = f_mkfs(USERPath, 0x07, 0, work_buf, sizeof(work_buf));
 
         if (res == FR_OK) {
             Serial_PrintString(DEBUG_UART, "[SD] Форматирование успешно!\r\n");

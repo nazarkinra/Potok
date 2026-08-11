@@ -31,5 +31,8 @@ uint8_t SD_MCP_Init(SPI_HandleTypeDef *hspi);
  * @retval 0 - Успех, иначе - код ошибки
  */
 uint8_t SD_MCP_WriteFile(const char *filename, const char *data);
+uint8_t SD_MCP_OpenFile(const char *filename);
+uint8_t SD_MCP_SaveConfig(const char *filename, void *cfg_data, uint16_t size);
+uint8_t SD_MCP_LoadConfig(const char *filename, void *cfg_data, uint16_t size);
 
 #endif /* SD_MCP23017_H */

@@ -10,7 +10,7 @@ class ArduinoLoRaGUI:
     def __init__(self, master):
         self.master = master
         master.title("LoRa Ground Station - ПОТОК")
-        master.geometry("1050x850") # Увеличили высоту для всех кнопок
+        master.geometry("1050x950") # Увеличили высоту для новой панели
 
         self.serial_port = None
         self.is_connected = False
@@ -18,6 +18,7 @@ class ArduinoLoRaGUI:
 
         self.create_widgets()
         self.init_gamepad()
+        self.cmd_queue = []
 
     def create_widgets(self):
         # 1. Connection Frame
@@ -54,8 +55,8 @@ class ArduinoLoRaGUI:
         ttk.Label(dashboard_frame, textvariable=self.node_var, font=("Arial", 12, "bold"), width=15).grid(row=0, column=0, padx=10, pady=5, sticky="w")
         ttk.Label(dashboard_frame, textvariable=self.temp_var, font=("Arial", 12), width=20).grid(row=0, column=1, padx=10, pady=5, sticky="w")
         ttk.Label(dashboard_frame, textvariable=self.alt_var, font=("Arial", 12), width=25).grid(row=0, column=2, padx=10, pady=5, sticky="w")
-        ttk.Label(dashboard_frame, textvariable=self.photo_var, font=("Arial", 12), width=25).grid(row=0, column=2, padx=10, pady=5, sticky="w")
-        ttk.Label(dashboard_frame, textvariable=self.flags_var, font=("Arial", 12, "bold"), foreground="blue").grid(row=0, column=3, padx=10, pady=5, sticky="w")
+        ttk.Label(dashboard_frame, textvariable=self.photo_var, font=("Arial", 12), width=25).grid(row=0, column=3, padx=10, pady=5, sticky="w")
+        ttk.Label(dashboard_frame, textvariable=self.flags_var, font=("Arial", 12, "bold"), foreground="blue").grid(row=0, column=4, padx=10, pady=5, sticky="w")
 
         # Инерциальные датчики (IMU)
         ttk.Label(dashboard_frame, textvariable=self.acc_var, font=("Arial", 12)).grid(row=1, column=0, columnspan=2, padx=10, pady=5, sticky="w")
@@ -86,6 +87,23 @@ class ArduinoLoRaGUI:
         self.servo2_label.pack(side="left", padx=2)
         ttk.Button(control_frame, text="Send", command=self.send_servo2).pack(side="left", padx=5)
         
+        # --- НОВАЯ ПАНЕЛЬ: Камера и Моторы ---
+        actuator_frame = ttk.LabelFrame(self.master, text="Actuators (Camera & Manual Motors)")
+        actuator_frame.pack(fill="x", padx=10, pady=5)
+
+        # Управление крыльями (Мотор F) - Команда 19 (0x13)
+        ttk.Label(actuator_frame, text="Wings (Motor F):").pack(side="left", padx=5)
+        ttk.Button(actuator_frame, text="Deploy", command=lambda: self.send_sys_cmd_param(19, 850)).pack(side="left", padx=2)
+        ttk.Button(actuator_frame, text="Stop", command=lambda: self.send_sys_cmd_param(19, 0, urgent=True)).pack(side="left", padx=2)
+
+        ttk.Separator(actuator_frame, orient='vertical').pack(side="left", fill='y', padx=10)
+
+        # Ручной тест мотора рысканья (Мотор E) - Команда 20 (0x14)
+        ttk.Label(actuator_frame, text="Yaw Test (Motor E):").pack(side="left", padx=5)
+        ttk.Button(actuator_frame, text="Left", command=lambda: self.send_sys_cmd_param(20, -20)).pack(side="left", padx=2)
+        ttk.Button(actuator_frame, text="Right", command=lambda: self.send_sys_cmd_param(20, 20)).pack(side="left", padx=2)
+        ttk.Button(actuator_frame, text="Stop", command=lambda: self.send_sys_cmd_param(20, 0, urgent=True)).pack(side="left", padx=2)
+        
         # 3.5. Системные команды (Re-Init)
         sys_frame = ttk.LabelFrame(self.master, text="System Control (Re-Initialization)")
         sys_frame.pack(fill="x", padx=10, pady=5)
@@ -96,7 +114,6 @@ class ArduinoLoRaGUI:
         ttk.Button(sys_frame, text="Re-init SD Card", command=lambda: self.send_sys_cmd(35)).pack(side="left", padx=5, pady=5)
         ttk.Button(sys_frame, text="Re-init I2C Exp", command=lambda: self.send_sys_cmd(36)).pack(side="left", padx=5, pady=5)
 
-        # 4. Управление режимами полета
         # 4. Управление режимами полета
         flight_frame = ttk.LabelFrame(self.master, text="Flight Control (Manual Override)")
         flight_frame.pack(fill="x", padx=10, pady=5)
@@ -121,6 +138,11 @@ class ArduinoLoRaGUI:
         self.live_roll_var = tk.StringVar(value="0")
         ttk.Entry(angles_frame, textvariable=self.live_roll_var, width=5).pack(side="left", padx=5)
         ttk.Button(angles_frame, text="Set Roll", command=lambda: self.send_live_angle(112, self.live_roll_var.get())).pack(side="left", padx=5)
+
+        ttk.Label(angles_frame, text="Target Yaw (°):").pack(side="left", padx=15)
+        self.live_yaw_var = tk.StringVar(value="0")
+        ttk.Entry(angles_frame, textvariable=self.live_yaw_var, width=5).pack(side="left", padx=5)
+        ttk.Button(angles_frame, text="Set Yaw", command=lambda: self.send_live_angle(114, self.live_yaw_var.get())).pack(side="left", padx=5)
 
         # 5. Калибровка датчиков
         calib_frame = ttk.LabelFrame(self.master, text="Sensor Calibration")
@@ -169,38 +191,31 @@ class ArduinoLoRaGUI:
         if not self.is_connected:
             port = self.port_var.get()
             try:
-                # Пытаемся открыть порт
-                self.serial_port = serial.Serial(port, 9600, timeout=1)
+                self.serial_port = serial.Serial(port, 115200, timeout=1)
                 self.is_connected = True
                 
-                # Обновляем интерфейс (Зеленый статус)
                 self.connect_btn.config(text="Disconnect")
                 self.status_label.config(text=f"Connected to {port}", foreground="green")
                 self.port_combo.config(state="disabled")
 
-                # Создаем файл логов с текущей датой
                 filename = f"telemetry_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
                 self.log_file = open(filename, "a", encoding="utf-8")
                 self.log_telemetry(f"=== Session Started. Logging to {filename} ===")
 
-                # Запускаем чтение
                 self.read_thread = threading.Thread(target=self.read_serial, daemon=True)
                 self.read_thread.start()
             except Exception as e:
-                # Если порт занят, выводим ошибку в окно
                 self.log_telemetry(f"Error connecting to {port}: {e}")
         else:
             self.is_connected = False
             if self.serial_port:
                 self.serial_port.close()
                 
-            # Закрываем файл логов
             if self.log_file:
                 self.log_file.write(f"=== Session Ended ===\n")
                 self.log_file.close()
                 self.log_file = None
 
-            # Обновляем интерфейс (Красный статус)
             self.connect_btn.config(text="Connect")
             self.status_label.config(text="Disconnected", foreground="red")
             self.port_combo.config(state="normal")
@@ -217,20 +232,17 @@ class ArduinoLoRaGUI:
                 break
 
     def log_telemetry(self, text):
-        # 1. Запись в файл с меткой времени
         if self.log_file:
             timestamp = datetime.now().strftime('%H:%M:%S.%f')[:-3]
             self.log_file.write(f"[{timestamp}] {text}\n")
-            self.log_file.flush() # Принудительное сохранение на диск
+            self.log_file.flush() 
 
-        # 2. Вывод логов и ошибок в текстовое поле
         if " | LOG:" in text or text.startswith("===") or text.startswith("Error"):
             self.telemetry_text.config(state=tk.NORMAL)
             self.telemetry_text.insert(tk.END, text + "\n")
             self.telemetry_text.see(tk.END)
             self.telemetry_text.config(state=tk.DISABLED)
             
-        # 3. Парсинг данных телеметрии на панель
         elif " | Alt:" in text: 
             try:
                 parts = text.split(" | ")
@@ -243,86 +255,82 @@ class ArduinoLoRaGUI:
                     elif p.startswith("Temp:"): self.temp_var.set(p.strip())
                     elif p.startswith("Photo:"): self.photo_var.set(p.strip())
                     elif p.startswith("Flags:"):
-                        # Добавили пробел после двоеточия: "Flags: 0x"
                         val_str = p.replace("Flags: 0x", "").strip()
                         state_id = (int(val_str, 16) >> 4) & 0x0F
-                        
                         states = {
-                            0: "IDLE (Отключен/На столе)",
-                            1: "Взведен (Ждет выброса)",
-                            2: "Выпадание (Падение)",
-                            3: "Выход из падения (Тангаж+)",
-                            4: "Планирование (Крейсер)",
-                            5: "Раскрытие парашюта - Есть"
+                            0: "IDLE", 1: "ARMED", 
+                            2: "DROP", 3: "RECOVERY", 
+                            4: "GLIDE", 5: "PARACHUTE"
                         }
                         self.flags_var.set(f"State: {states.get(state_id, 'Неизвестно')}")
             except Exception as e:
                 pass 
+                
+            # --- ПОСЛЕДОВАТЕЛЬНАЯ ОТПРАВКА ОЧЕРЕДИ (БЕЗ СПАМА) ---
+        if self.is_connected and getattr(self, 'cmd_queue', []) and self.serial_port and self.serial_port.is_open:
+            if self.cmd_queue:
+                try:
+                    cmd_str, log_msg = self.cmd_queue.pop(0) 
+                    self.serial_port.write(cmd_str.encode('utf-8'))
+                    self.log_telemetry(log_msg)
+                except Exception as e:
+                    self.log_telemetry(f"Error sending command: {e}")
 
-    # --- Функции отправки команд ---
+    def queue_command(self, cmd_str, log_msg, urgent=False):
+        if self.is_connected:
+            if not hasattr(self, 'cmd_queue'): self.cmd_queue = []
+            
+            prefix = " ".join(cmd_str.split()[0:2]) 
+            
+            if urgent:
+                self.cmd_queue = [c for c in self.cmd_queue if not c[0].startswith(prefix)]
+                self.cmd_queue.insert(0, (cmd_str, log_msg))
+            else:
+                if prefix in ["CMD 16", "CMD 17", "CMD 19", "CMD 20", "CMD 21", "CMD 22"]:
+                    self.cmd_queue = [c for c in self.cmd_queue if not c[0].startswith(prefix)]
+                self.cmd_queue.append((cmd_str, log_msg))
+            
     def send_servo1(self):
-        if self.is_connected and self.serial_port and self.serial_port.is_open:
-            try:
-                angle = int(self.servo1_var.get())
-                cmd_str = f"CMD 16 {angle}\n"
-                self.serial_port.write(cmd_str.encode('utf-8'))
-                self.log_telemetry(f">> PC Request: Sent CMD 16 {angle} (Servo 1 -> {angle}°)")
-            except Exception as e:
-                self.log_telemetry(f"Error sending command: {e}")
+        angle = int(self.servo1_var.get())
+        self.queue_command(f"CMD 16 {angle}\n", f">> Queued: Servo 1 -> {angle}°")
 
     def send_servo2(self):
-        if self.is_connected and self.serial_port and self.serial_port.is_open:
-            try:
-                angle = int(self.servo2_var.get())
-                cmd_str = f"CMD 17 {angle}\n"
-                self.serial_port.write(cmd_str.encode('utf-8'))
-                self.log_telemetry(f">> PC Request: Sent CMD 17 {angle} (Servo 2 -> {angle}°)")
-            except Exception as e:
-                self.log_telemetry(f"Error sending command: {e}")
+        angle = int(self.servo2_var.get())
+        self.queue_command(f"CMD 17 {angle}\n", f">> Queued: Servo 2 -> {angle}°")
 
     def send_sys_cmd(self, cmd_id):
-        if self.is_connected and self.serial_port and self.serial_port.is_open:
-            try:
-                cmd_str = f"CMD {cmd_id} 0\n"
-                self.serial_port.write(cmd_str.encode('utf-8'))
-                self.log_telemetry(f">> PC Request: Sent SYS CMD {cmd_id}")
-            except Exception as e:
-                self.log_telemetry(f"Error sending command: {e}")
+        self.queue_command(f"CMD {cmd_id} 0\n", f">> Queued: SYS CMD {cmd_id}")
+                
+    def send_sys_cmd_param(self, cmd_id, param, urgent=False):
+        self.queue_command(f"CMD {cmd_id} {param}\n", f">> Queued: CMD {cmd_id} | Param: {param}", urgent=urgent)
         
     def send_pid(self):
-        if self.is_connected and self.serial_port and self.serial_port.is_open:
-            try:
-                cmd_hex = self.pid_param_var.get().split()[0]
-                cmd_id = int(cmd_hex, 16)
-                
-                val_float = float(self.pid_val_var.get())
-                param_int = int(val_float * 1000)
-                
-                if param_int > 32767: param_int = 32767
-                if param_int < -32768: param_int = -32768
-                
-                cmd_str = f"CMD {cmd_id} {param_int}\n"
-                self.serial_port.write(cmd_str.encode('utf-8'))
-                
-                self.log_telemetry(f">> PC Request: Sent PID CMD {cmd_hex} with float value {val_float} (Raw: {param_int})")
-            except ValueError:
-                self.log_telemetry("Error: Invalid PID value format! Please enter a number.")
-            except Exception as e:
-                self.log_telemetry(f"Error sending command: {e}")
+        try:
+            cmd_hex = self.pid_param_var.get().split()[0]
+            cmd_id = int(cmd_hex, 16)
+            val_float = float(self.pid_val_var.get())
+            param_int = int(val_float * 1000)
+            if param_int > 32767: param_int = 32767
+            if param_int < -32768: param_int = -32768
+            self.queue_command(f"CMD {cmd_id} {param_int}\n", f">> Queued: PID {cmd_hex} -> {val_float}")
+        except ValueError:
+            self.log_telemetry("Error: Invalid PID value format!")
     
     def send_live_angle(self, cmd_id, val_str):
-        if self.is_connected and self.serial_port and self.serial_port.is_open:
-            try:
-                angle = int(val_str)
-                cmd_str_tx = f"CMD {cmd_id} {angle}\n"
-                self.serial_port.write(cmd_str_tx.encode('utf-8'))
-                self.log_telemetry(f">> PC Request: Sent Live Angle CMD {hex(cmd_id)} -> {angle}°")
-            except ValueError:
-                self.log_telemetry("Error: Angle must be an integer!")
-            except Exception as e:
-                self.log_telemetry(f"Error sending command: {e}")
+        try:
+            angle = int(val_str)
+            self.queue_command(f"CMD {cmd_id} {angle}\n", f">> Queued: Live Angle {hex(cmd_id)} -> {angle}°")
+        except ValueError:
+            self.log_telemetry("Error: Angle must be an integer!")
+
+    def send_yaw_test(self, direction):
+        try:
+            time_ms = int(self.yaw_time_var.get())
+            param = time_ms * direction
+            self.send_sys_cmd_param(21, param)
+        except ValueError:
+            self.log_telemetry("Error: Yaw time must be an integer!")
                 
-    # --- ФУНКЦИИ ГЕЙМПАДА ---
     def init_gamepad(self):
         try:
             pygame.init()
@@ -331,7 +339,6 @@ class ArduinoLoRaGUI:
                 self.joystick = pygame.joystick.Joystick(0)
                 self.joystick.init()
                 self.log_telemetry(f"=== Gamepad connected: {self.joystick.get_name()} ===")
-                # Запускаем цикл опроса событий
                 self.poll_gamepad()
             else:
                 self.log_telemetry("=== Gamepad not found. UI control only. ===")
@@ -340,48 +347,62 @@ class ArduinoLoRaGUI:
 
     def poll_gamepad(self):
         try:
-            # Обработка всех событий pygame (кнопки, крестовина)
             for event in pygame.event.get():
-                
-                # Крестовина (D-pad) управляет целевыми углами
-                if event.type == pygame.JOYHATMOTION:
-                    dx, dy = event.value
-                    
-                    # Изменение тангажа (Pitch) - Вверх/Вниз
-                    if dy != 0:
-                        try:
-                            current_pitch = int(self.live_pitch_var.get())
-                            new_pitch = current_pitch + dy 
-                            self.live_pitch_var.set(str(new_pitch))
-                            self.send_live_angle(113, str(new_pitch))
-                        except ValueError: pass
-                        
-                    # Изменение крена (Roll) - Влево/Вправо
-                    if dx != 0:
-                        try:
-                            current_roll = int(self.live_roll_var.get())
-                            new_roll = current_roll + dx
-                            self.live_roll_var.set(str(new_roll))
-                            self.send_live_angle(112, str(new_roll))
-                        except ValueError: pass
-                        
-                # Обычные кнопки управляют режимами
-                elif event.type == pygame.JOYBUTTONDOWN:
-                    # Кнопка 0 (Обычно A / Крестик) - Режим GLIDE (Планирование)
-                    if event.button == 0:
+                if event.type == pygame.JOYBUTTONDOWN:
+                    if event.button == 0:   # A
                         self.send_sys_cmd(68) 
                         self.log_telemetry(">> Gamepad: Switched to GLIDE")
-                        
-                    # Кнопка 1 (Обычно B / Кружок) - Режим RECOVERY (Выход из пике)
-                    elif event.button == 1:
+                    elif event.button == 1: # B 
                         self.send_sys_cmd(67) 
                         self.log_telemetry(">> Gamepad: Switched to RECOVERY")
-                        
+                    elif event.button == 3: # Y 
+                        self.send_sys_cmd_param(19, 750) 
+                        self.log_telemetry(">> Gamepad: Wings Deploy")
+                    elif event.button == 2: # X 
+                        self.send_sys_cmd_param(19, 0, urgent=True)   
+                        self.log_telemetry(">> Gamepad: Wings Stop")
+
+            if pygame.joystick.get_count() > 0:
+                axis_x = self.joystick.get_axis(0) 
+                axis_y = self.joystick.get_axis(1) 
+                
+                # Увеличена мертвая зона для отсечения аппаратного дребезга стиков
+                deadzone = 0.25 
+
+                yaw_speed = 0
+                if abs(axis_x) > deadzone:
+                    sign_x = 1 if axis_x > 0 else -1
+                    mapped_x = (abs(axis_x) - deadzone) / (1.0 - deadzone)
+                    
+                    # Ограничиваем скорость мотора до 60%, чтобы предотвратить перезагрузку STM32
+                    yaw_speed = int(mapped_x * 60 * sign_x)
+                    # Округляем до десятков
+                    yaw_speed = round(yaw_speed / 10) * 10
+
+                servo_angle = 90
+                if abs(axis_y) > deadzone:
+                    sign_y = 1 if axis_y > 0 else -1
+                    mapped_y = (abs(axis_y) - deadzone) / (1.0 - deadzone)
+                    servo_angle = 90 + int(mapped_y * 85 * sign_y)
+                    # Округляем угол кратно 5 градусам
+                    servo_angle = round(servo_angle / 5) * 5
+
+                # Отправляем команды только если значение реально изменилось
+                if yaw_speed != getattr(self, 'last_yaw_speed', 0):
+                    # ВОССТАНОВЛЕНА ПЕРЕМЕННАЯ:
+                    is_stop = (yaw_speed == 0)
+                    self.send_sys_cmd_param(20, yaw_speed, urgent=is_stop)
+                    self.last_yaw_speed = yaw_speed
+
+                if servo_angle != getattr(self, 'last_servo_angle', 90):
+                    self.send_sys_cmd_param(22, servo_angle)
+                    self.last_servo_angle = servo_angle
+
         except Exception as e:
-            pass
+            self.log_telemetry(f"Error in gamepad: {e}")
             
-        # Tkinter запустит эту функцию снова через 100 миллисекунд (10 раз в секунду)
-        self.master.after(100, self.poll_gamepad)
+        # ОСТАВЛЕН ТОЛЬКО ОДИН ВЫЗОВ ТАЙМЕРА!
+        self.master.after(150, self.poll_gamepad)
 
 if __name__ == "__main__":
     root = tk.Tk()

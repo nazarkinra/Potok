@@ -49,4 +49,8 @@ HAL_StatusTypeDef BMI088_CalibrateAccel(SPI_HandleTypeDef *hspi, uint16_t num_sa
 HAL_StatusTypeDef BMI088_ReadRaw(SPI_HandleTypeDef *hspi, BMI088_Raw_t *raw);
 void BMI088_ToPhysical(const BMI088_Raw_t *raw, BMI088_Physical_t *phys);
 
+// Функции для загрузки/выгрузки калибровки гироскопа
+void BMI088_SetGyroCalibration(float ox, float oy, float oz);
+void BMI088_GetGyroCalibration(float *ox, float *oy, float *oz);
+
 #endif

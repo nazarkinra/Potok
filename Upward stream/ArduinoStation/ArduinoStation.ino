@@ -38,7 +38,7 @@ typedef struct __attribute__((packed)) {
 
 // Функция setup()
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial);
 
   Serial.println(F("LoRa Ground Station Init..."));
@@ -51,13 +51,13 @@ void setup() {
   }
 
   LoRa.setSpreadingFactor(7);      
-  LoRa.setSignalBandwidth(125E3);  
+  LoRa.setSignalBandwidth(250E3);  
   LoRa.setCodingRate4(5);          
   LoRa.enableCrc();                
   LoRa.setSyncWord(0x12);          
   
   // Мощность снижена до 10, чтобы избежать просадок напряжения (Brownout)
-  LoRa.setTxPower(10);             
+  LoRa.setTxPower(15);             
 
   Serial.println(F("Ready. Waiting for telemetry & logs..."));
 }

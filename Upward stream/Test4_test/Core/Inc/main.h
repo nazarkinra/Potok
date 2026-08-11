@@ -57,6 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define CSMERA_Pin GPIO_PIN_0
+#define CSMERA_GPIO_Port GPIOA
 #define RADIO_BUSY_Pin GPIO_PIN_3
 #define RADIO_BUSY_GPIO_Port GPIOB
 #define LED_PIN_1_Pin GPIO_PIN_8

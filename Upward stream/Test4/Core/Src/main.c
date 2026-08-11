@@ -4,16 +4,6 @@
   * @file           : main.c
   * @brief          : Main program body
   ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
@@ -63,7 +53,31 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void Dump_Data_CSV(void) {
+    FIL file;
+    FRESULT res;
+    uint8_t buffer[128]; // Буфер для порционного чтения
+    UINT bytesRead;
 
+    Serial_Printf(&huart1, "\r\n--- SD DUMP START ---\r\n");
+
+    // Открываем файл строго для чтения (FA_READ)[cite: 5]
+    res = f_open(&file, "0:/data.csv", FA_READ);
+    if (res == FR_OK) {
+        do {
+            res = f_read(&file, buffer, sizeof(buffer), &bytesRead);
+            if (res == FR_OK && bytesRead > 0) {
+                // Прямая передача сырых байтов в UART, защита от багов со строковыми терминаторами[cite: 5]
+                HAL_UART_Transmit(&huart1, buffer, bytesRead, HAL_MAX_DELAY);
+            }
+        } while (res == FR_OK && bytesRead > 0);
+
+        f_close(&file);
+        Serial_Printf(&huart1, "\r\n--- SD DUMP END ---\r\n");
+    } else {
+        Serial_Printf(&huart1, "\r\nSD DUMP ERROR: %d\r\n", res);
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -103,31 +117,28 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
-    // Инициализация карты (укажи свой хэндл SPI, например &hspi2)
+    // Инициализация карты (укажи свой хэндл SPI, например &hspi2)[cite: 5]
     if (SD_MCP_Init(&hspi2) == 0) {
-        Serial_PrintString(DEBUG_UART, "\r\n[MAIN] SD карта готова. Начинаем запись...\r\n");
+        Serial_PrintString(DEBUG_UART, "\r\n[MAIN] SD карта готова. Начинаем чтение дампа...\r\n");
 
-        // Пишем "Hello world!" и добавляем перенос строки
-        uint8_t res = SD_MCP_WriteFile("hello.txt", "Hello world!\r\n");
+        Dump_Data_CSV(); // Запускаем выгрузку[cite: 5]
 
-        if (res == 0) {
-            Serial_PrintString(DEBUG_UART, "[MAIN] SUCCESS! Файл hello.txt успешно записан.\r\n");
-        } else {
-            Serial_Printf(DEBUG_UART, "[MAIN] Ошибка записи! Код: %d\r\n", res);
-        }
     } else {
         Serial_PrintString(DEBUG_UART, "\r\n[MAIN] Критическая ошибка инициализации SD.\r\n");
     }
 
-    /* USER CODE END 2 */
+    // Жестко блокируем дальнейшее выполнение программы, чтобы ничего не перезаписать[cite: 5]
+    while (1) {
+        HAL_GPIO_TogglePin(LED_PIN_1_GPIO_Port, LED_PIN_1_Pin);
+        HAL_Delay(1000);
+    }
+
+  /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  // Индикация работы микроконтроллера (мигание 1 раз в секунду)
-	        HAL_GPIO_TogglePin(LED_PIN_1_GPIO_Port, LED_PIN_1_Pin);
-	        HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
