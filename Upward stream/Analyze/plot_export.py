@@ -92,6 +92,7 @@ def generate_plots():
     sd_df['Acc_X'] /= 100.0; sd_df['Acc_Y'] /= 100.0; sd_df['Acc_Z'] /= 100.0
     sd_df['Gyr_X'] /= 100.0; sd_df['Gyr_Y'] /= 100.0; sd_df['Gyr_Z'] /= 100.0
     sd_df['Altitude'] /= 10.0
+    sd_df['Temperature'] /= 100.0
     sd_df['Flight_State'] = sd_df['State_Flags'].fillna(0).astype(int) // 16
 
     print("2. Синхронизация времени...")
@@ -121,7 +122,7 @@ def generate_plots():
     if first_valid is not None: sd_df = sd_df.loc[first_valid:].reset_index(drop=True)
     sd_df['Time_s'] = (sd_df['Time'] - sd_df['Time'].iloc[0]).dt.total_seconds()
 
-    print("3. Расчет скоростей...")
+    print("3. Расчет скоростей и температуры...")
     df = sd_df[(sd_df['Altitude'] > -200) & (sd_df['Altitude'] < 2500)].copy()
 
     df['Acc_Mag'] = np.sqrt(df['Acc_X']**2 + df['Acc_Y']**2 + df['Acc_Z']**2)
@@ -137,6 +138,8 @@ def generate_plots():
         df['Vert_Speed_Smooth'] = savgol_filter(df['Vert_Speed_Raw'], window_length=31, polyorder=2)
     except Exception:
         df['Vert_Speed_Smooth'] = df['Vert_Speed_Raw'].rolling(window=15, center=True, min_periods=1).mean()
+        
+    df['Temp_Smooth'] = df['Temperature'].rolling(window=30, center=True, min_periods=1).mean()
     
     madgwick = SimpleMadgwick(beta=1.0)
     acc0 = np.array([df['Acc_X'].iloc[0], df['Acc_Y'].iloc[0], df['Acc_Z'].iloc[0]])
@@ -186,9 +189,9 @@ def generate_plots():
             
         t = sub_df['Time_s']
         
-        # Настройка дашборда 3x2
-        fig, axs = plt.subplots(3, 2, figsize=(16, 12))
-        fig.suptitle(f'Телеметрия полета (интервал {t_start:.1f} - {t_end:.1f} сек)', fontsize=16)
+        # Сетка 4x2 для размещения 7 графиков
+        fig, axs = plt.subplots(4, 2, figsize=(16, 16))
+        fig.suptitle(f'Телеметрия планера BBB9 (интервал {t_start:.1f} - {t_end:.1f} сек)', fontsize=16)
         
         # 1. Ускорение по осям + результирующее
         ax = axs[0, 0]
@@ -244,6 +247,18 @@ def generate_plots():
         ax.set_xlabel('Время, с')
         ax.set_ylabel('Горизонтальная скорость, м/с')
         ax.legend(loc='upper right')
+        
+        # 7. Температура (Сглаженная и сырая)
+        ax = axs[3, 0]
+        ax.plot(t, sub_df['Temperature'], color='lightcoral', alpha=0.4, label='Сырая')
+        ax.plot(t, sub_df['Temp_Smooth'], color='red', linewidth=2, label='Сглаженная')
+        ax.set_title('Температура внутри корпуса')
+        ax.set_xlabel('Время, с')
+        ax.set_ylabel('Температура, °C')
+        ax.legend(loc='upper right')
+
+        # Убираем пустой график 8
+        fig.delaxes(axs[3, 1])
 
         plt.tight_layout(rect=[0, 0.03, 1, 0.95])
         filename = os.path.join(out_dir, f'telemetry_{name}.png')
